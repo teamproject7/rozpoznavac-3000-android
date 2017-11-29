@@ -45,7 +45,7 @@
 
         <ImageView android:id="@+id/imageView1"
             android:layout_width="350dp"
-            android:layout_height="450dp"
+            android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
             android:paddingTop="5dp"
             android:paddingBottom="5dp"

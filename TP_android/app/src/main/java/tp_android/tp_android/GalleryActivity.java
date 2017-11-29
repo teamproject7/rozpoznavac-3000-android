@@ -24,6 +24,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.provider.MediaStore;
@@ -51,6 +53,7 @@ public class GalleryActivity extends Activity {
 
     List<String> DCMIArray = new ArrayList<String>();
     private String url = "http://10.0.2.2:8080/";
+    //private String url = "http://10.10.53.212:8080/";
     private String encodedImage;
 
     private Integer positionn;
@@ -102,6 +105,7 @@ public class GalleryActivity extends Activity {
                     @Override
                     public void onResponse(String response) {
                         // response
+                        Log.d("res",response);
                         vypis(response);
 
                     }
@@ -127,22 +131,33 @@ public class GalleryActivity extends Activity {
         queue.add(postRequest);
     }
 
-    public void vypis(String response){
-        String[] splitresponse = response.split("=====");
-        Log.d("pocet", Integer.toString(splitresponse.length));
-        Log.d("respon", response);
-        Log.d("Response", splitresponse[0] + splitresponse[1]);
-        Log.d("Znacka", splitresponse[2]);
-        Log.d("poistenie", splitresponse[3]);
-        Log.d("STK, EK", splitresponse[4]);
-        Log.d("Znacka", splitresponse[5]);
-        Log.d("Model", splitresponse[6]);
-        Log.d("Rok vyroby", splitresponse[7]);
+    public void vypis(String response) {
+        String[] numberOfResults = response.split("_____");
+        Log.d("pocet", Integer.toString(numberOfResults.length));
 
-        Intent intent = new Intent(this, ListItemActivity.class);
-        intent.putExtra("response", response);
-        intent.putExtra("image", encodedImage);
-        startActivity(intent);
+        if(numberOfResults.length > 1){
+            Intent intent = new Intent(this, ResponceListActivity.class);
+            intent.putExtra("response", response);
+            intent.putExtra("image", encodedImage);
+            startActivity(intent);
+        }
+        else {
+            String[] splitresponse = response.split("=====");
+            Log.d("pocet", Integer.toString(splitresponse.length));
+            Log.d("respon", response);
+            Log.d("Response", splitresponse[0] + splitresponse[1]);
+            Log.d("Znacka", splitresponse[2]);
+            Log.d("poistenie", splitresponse[3]);
+            Log.d("STK, EK", splitresponse[4]);
+            Log.d("Znacka", splitresponse[5]);
+            Log.d("Model", splitresponse[6]);
+            Log.d("Rok vyroby", splitresponse[7]);
+
+            Intent intent = new Intent(this, ListItemActivity.class);
+            intent.putExtra("response", response);
+            intent.putExtra("image", encodedImage);
+            startActivity(intent);
+        }
     }
 
     public static String getBucketId(String path) {
