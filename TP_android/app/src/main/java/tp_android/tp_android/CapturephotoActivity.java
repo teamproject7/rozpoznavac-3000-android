@@ -2,6 +2,7 @@ package tp_android.tp_android;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.Volley;
 import java.io.ByteArrayOutputStream;
 import android.util.Base64;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +36,8 @@ public class CapturephotoActivity extends Activity {
     private Button postImageButton;
     private String url = "http://10.0.2.2:8080/";
    //private String url = "http://10.10.53.212:8080/";
+    private Database db;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +54,9 @@ public class CapturephotoActivity extends Activity {
                 startActivityForResult(cameraIntent, CAMERA_REQUEST);
             }
         });
+        db = new Database(this);
+        db.open();
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -127,7 +134,7 @@ public class CapturephotoActivity extends Activity {
             Log.d("Znacka", splitresponse[5]);
             Log.d("Model", splitresponse[6]);
             Log.d("Rok vyroby", splitresponse[7]);
-
+            db.addRecord(new Date(), splitresponse[2], response, splitresponse[0]);
             Intent intent = new Intent(this, ListItemActivity.class);
             intent.putExtra("response", response);
             intent.putExtra("image", encodedImage);

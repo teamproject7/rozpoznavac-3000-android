@@ -7,27 +7,29 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import java.time.LocalDateTime;
 
-public class ListAdapter {
+import java.util.Date;
 
-    public static final String KEY_ID = "id";
+public class Database {
+
+    public static final String KEY_ID = "_id";
     public static final String KEY_TIME = "date_time";
     public static final String KEY_ECV = "ecv";
     public static final String KEY_JSON = "json_response";
+    public static final String KEY_USER = "user";
 
-    private static final String TAG = "ListAdapter";
+    private static final String TAG = "Database";
 
     private DatabaseHelper dbHelper;
     private SQLiteDatabase db;
 
     private static final String DATABASE_CREATE =
-            "create table ecv_records (id integer primary key autoincrement, "
-                    + "date_time text not null, ecv text not null, json_response text not null)";
+            "create table ecv_records (_id integer primary key autoincrement, "
+                    + "date_time text not null, ecv text not null, json_response text not null, user text not null)";
 
     private static final String DATABASE_NAME = "tp7";
     private static final String DATABASE_TABLE = "ecv_records";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 5;
 
     private final Context mCtx;
 
@@ -47,17 +49,17 @@ public class ListAdapter {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS notes");
+            db.execSQL("DROP TABLE IF EXISTS ecv_records");
             onCreate(db);
         }
     }
 
-    public ListAdapter(Context ctx) {
+    public Database(Context ctx) {
         this.mCtx = ctx;
     }
 
 
-    public ListAdapter open() throws SQLException {
+    public Database open() throws SQLException {
         dbHelper = new DatabaseHelper(mCtx);
         if (db == null) {
             db = dbHelper.getWritableDatabase();
@@ -70,12 +72,13 @@ public class ListAdapter {
     }
 
 
-    public long addRecord(LocalDateTime dateTime, String ecv, String json) {
+    public long addRecord(Date dateTime, String ecv, String json, String user) {
 
         ContentValues initialValues = new ContentValues();
         initialValues.put(KEY_TIME, dateTime.toString());
         initialValues.put(KEY_ECV, ecv);
         initialValues.put(KEY_JSON, json);
+        initialValues.put(KEY_USER, user);
 
         return db.insert(DATABASE_TABLE, null, initialValues);
     }
@@ -90,7 +93,7 @@ public class ListAdapter {
     public Cursor fetchAllRecords() {
 
         return db.query(DATABASE_TABLE, new String[]{KEY_ID, KEY_TIME,
-                KEY_ECV, KEY_JSON}, null, null, null, null, null);
+                KEY_ECV, KEY_JSON, KEY_USER}, null, null, null, null, null);
     }
 
     public Cursor fetchRecord(long rowId) throws SQLException {
@@ -98,7 +101,7 @@ public class ListAdapter {
         Cursor mCursor =
 
                 db.query(true, DATABASE_TABLE, new String[]{KEY_ID,
-                                KEY_TIME, KEY_ECV, KEY_JSON}, KEY_ID + "=" + rowId, null,
+                                KEY_TIME, KEY_ECV, KEY_JSON, KEY_USER}, KEY_ID + "=" + rowId, null,
                         null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -108,11 +111,12 @@ public class ListAdapter {
     }
 
 
-    public boolean updateRecord(long rowId, LocalDateTime dateTime, String ecv, String json) {
+    public boolean updateRecord(long rowId, Date dateTime, String ecv, String json, String user) {
         ContentValues args = new ContentValues();
         args.put(KEY_TIME, dateTime.toString());
         args.put(KEY_ECV, ecv);
         args.put(KEY_JSON, json);
+        args.put(KEY_USER, user);
 
         return db.update(DATABASE_TABLE, args, KEY_ID + "=" + rowId, null) > 0;
     }

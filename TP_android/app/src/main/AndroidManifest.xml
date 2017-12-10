@@ -19,9 +19,7 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
-                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
@@ -31,9 +29,12 @@
             android:name=".GalleryActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".HistoryRecordsActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ListItemActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ResponceListActivity"></activity>
+        <activity android:name=".ResponceListActivity" />
     </application>
 
 </manifest>

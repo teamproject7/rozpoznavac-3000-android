@@ -16,7 +16,9 @@ import android.widget.AdapterView;
 import android.content.Intent;
 import android.app.Activity;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ResponceListActivity extends AppCompatActivity {
 
@@ -33,7 +35,7 @@ public class ResponceListActivity extends AppCompatActivity {
     private String imgresponse;
     private ArrayList<String> list = new ArrayList<String>();
     private ListView lv;
-
+    private Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,14 +46,18 @@ public class ResponceListActivity extends AppCompatActivity {
         response = intent.getStringExtra("response");
         imgresponse = intent.getStringExtra("image");
         numberOfResponses = response.split("_____");
+        db = new Database(this);
+        db.open();
 
-        for(int i=0; i < numberOfResponses.length; i++){
+
+        for (int i = 0; i < numberOfResponses.length; i++) {
             String[] values = numberOfResponses[i].split("=====");
             list.add(values[2]);
+            db.addRecord(new Date(), values[2], numberOfResponses[i], values[0]);
         }
 
         lv = (ListView) findViewById(R.id.list_view);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list );
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list);
         lv.setAdapter(arrayAdapter);
         lv.setClickable(true);
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -62,6 +68,7 @@ public class ResponceListActivity extends AppCompatActivity {
             }
         });
     }
+
     public void vypis(int position) {
         Intent intent = new Intent(this, ListItemActivity.class);
         intent.putExtra("response", numberOfResponses[position]);

@@ -54,29 +54,28 @@ public class ListItemActivity extends AppCompatActivity {
         buttonPoistenie = (Button) findViewById(R.id.buttonPoistenie);
         buttonStk = (Button) findViewById(R.id.buttonStk);
         buttonVozidlo = (Button) findViewById(R.id.buttonVozidlo);
-        byte[] decodedString = Base64.decode(imgresponse, Base64.DEFAULT);
-        Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        Bitmap bmp2 = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth()-30, bmp.getHeight()-30);
+        if (imgresponse != null) {
+            byte[] decodedString = Base64.decode(imgresponse, Base64.DEFAULT);
+            Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            Bitmap bmp2 = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth() - 30, bmp.getHeight() - 30);
 
-        ImageView image = (ImageView) findViewById(R.id.imageView);
+            ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        image.setImageBitmap(bmp2);
-
+            image.setImageBitmap(bmp2);
+        }
         buttonSpz.setText(responseArray[2]);
         buttonSpz.setBackgroundColor(Color.GREEN);
         if (responseArray[3].equals("1")) {
             buttonPoistenie.setBackgroundColor(Color.GREEN);
             buttonPoistenie.setText("Zaplatené");
-        }
-        else{
+        } else {
             buttonPoistenie.setBackgroundColor(Color.RED);
             buttonPoistenie.setText("Nezaplatené");
         }
         if (responseArray[4].equals("1")) {
             buttonStk.setBackgroundColor(Color.GREEN);
             buttonStk.setText("Platná");
-        }
-        else{
+        } else {
             buttonStk.setBackgroundColor(Color.RED);
             buttonStk.setText("Neplatná");
         }
@@ -87,14 +86,14 @@ public class ListItemActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
-                View customView = inflater.inflate(R.layout.custom_layout,null);
+                View customView = inflater.inflate(R.layout.custom_layout, null);
 
                 mPopupWindow = new PopupWindow(
                         customView,
                         LayoutParams.WRAP_CONTENT,
                         LayoutParams.WRAP_CONTENT
                 );
-                if(Build.VERSION.SDK_INT>=21){
+                if (Build.VERSION.SDK_INT >= 21) {
                     mPopupWindow.setElevation(5.0f);
                 }
                 Button buttonZnacka = (Button) customView.findViewById(R.id.buttonZnacka);
@@ -110,7 +109,7 @@ public class ListItemActivity extends AppCompatActivity {
                         mPopupWindow.dismiss();
                     }
                 });
-                mPopupWindow.showAtLocation(mLinearLayout, Gravity.CENTER,0,0);
+                mPopupWindow.showAtLocation(mLinearLayout, Gravity.CENTER, 0, 0);
             }
         });
     }

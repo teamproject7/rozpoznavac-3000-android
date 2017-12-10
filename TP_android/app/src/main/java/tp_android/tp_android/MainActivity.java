@@ -25,4 +25,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
+    public void HistoricRecords(View view) {
+        Intent intent = new Intent(this, HistoryRecordsActivity.class);
+        startActivity(intent);
+
+    }
+
+
 }
