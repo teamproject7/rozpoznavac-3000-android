@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#2F4F4F"
     android:layout_height="match_parent"
     tools:context="tp_android.tp_android.ResponceListActivity"
     android:paddingBottom="16dp"

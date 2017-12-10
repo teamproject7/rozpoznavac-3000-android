@@ -3,8 +3,17 @@ xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="tp_android.tp_android.GalleryActivity"
+    android:background="#2F4F4F"
+
     android:orientation="vertical" >
 
+    <TextView
+        android:id="@+id/myAwesomeTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:text="JSON"
+        android:textSize="15sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -49,8 +58,16 @@ xmlns:tools="http://schemas.android.com/tools"
             android:paddingLeft="5dp"
             android:paddingTop="10dp"
             android:paddingRight="5dp"
+            android:scaleType="fitCenter"
+            android:onClick="Rotate"
             android:src="@drawable/ic_launcher" />
     </LinearLayout>
+
+
+
+
+
+
 
 </LinearLayout>
 

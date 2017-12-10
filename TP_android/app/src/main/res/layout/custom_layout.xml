@@ -4,12 +4,12 @@
     android:id="@+id/rl_custom_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#2F4F4F"
     android:orientation="vertical"
     android:paddingBottom="10dp"
-    android:paddingLeft="5dp"
+    android:paddingLeft="0dp"
     android:paddingRight="5dp"
-    android:paddingTop="10dp">
+    android:background="#2F4F4F"
+    android:paddingTop="120dp">
 
     <LinearLayout
         android:id="@+id/linearLayout4"
@@ -25,7 +25,7 @@
 
         <TextView
             android:id="@+id/textView2"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_weight="0.82"
@@ -58,7 +58,7 @@
 
         <TextView
             android:id="@+id/editTexZnacka"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="Značka"
@@ -67,7 +67,7 @@
 
         <Button
             android:id="@+id/buttonZnacka"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text=""
@@ -88,7 +88,7 @@
 
         <TextView
             android:id="@+id/editTextModel"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="Model"
@@ -97,7 +97,7 @@
 
         <Button
             android:id="@+id/buttonModel"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text=""
@@ -118,7 +118,7 @@
 
         <TextView
             android:id="@+id/editTextRocnik"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text="Ročník"
@@ -127,7 +127,7 @@
 
         <Button
             android:id="@+id/buttonRocnik"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text=""

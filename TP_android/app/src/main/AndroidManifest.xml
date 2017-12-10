@@ -2,10 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tp_android.tp_android">
 
+    <permission
+        android:name="com.example.gcm.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -34,7 +46,19 @@
         <activity
             android:name=".ListItemActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ResponceListActivity" />
+        <activity
+            android:name=".ResponceListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Gallery2Activity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".GalleryItemViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ResponceErrorActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name=".ApplicationSettingActivity"></activity>
     </application>
 
 </manifest>

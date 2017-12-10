@@ -1,12 +1,15 @@
 package tp_android.tp_android;
 
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Bundle;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.TypedArray;
-
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -15,52 +18,45 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.provider.MediaStore;
 import android.provider.MediaStore.Images;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-
 import android.os.Environment;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 
 
 @SuppressWarnings("deprecation")
 public class GalleryActivity extends Activity {
-    public static final String CAMERA_IMAGE_BUCKET_NAME =
-            Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
-    public static final String CAMERA_IMAGE_BUCKET_ID =
-            getBucketId(CAMERA_IMAGE_BUCKET_NAME);
-    public Database db;
-
-    List<String> DCMIArray = new ArrayList<String>();
-    private String url = "http://10.0.2.2:8080/";
-    //private String url = "http://10.10.53.212:8080/";
+    private static final String CAMERA_IMAGE_BUCKET_NAME = Environment.getExternalStorageDirectory().toString() + "/DCIM/Camera";
+    private static final String CAMERA_IMAGE_BUCKET_ID = getBucketId(CAMERA_IMAGE_BUCKET_NAME);
+    private TextView myAwesomeTextView;
+    private List<String> DCMIArray = new ArrayList<String>();
+    //private String url = "http://10.0.2.2:8080/";
+    private String url = "http://108.61.179.124:80/spz_img/";
+	public Database db;
     private String encodedImage;
-
-    private Integer positionn;
+    private ImageView imageView;
+    private Bitmap photo;
+    private Bitmap photoSend;
+    private Boolean imageInit = false;
     private Button button;
 
 
@@ -69,6 +65,7 @@ public class GalleryActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         DCMIArray = getCameraImages(this);
+        myAwesomeTextView = (TextView)findViewById(R.id.myAwesomeTextView);
         button = (Button) this.findViewById(R.id.button2);
         db = new Database(this);
         db.open();
@@ -77,88 +74,82 @@ public class GalleryActivity extends Activity {
         gallery.setAdapter(new ImageAdapter(this));
         gallery.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-                //Toast.makeText(getBaseContext(), DCMIArray.get(position),
-                //        Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getBaseContext(), DCMIArray.get(position), Toast.LENGTH_SHORT).show();
                 button.setVisibility(View.VISIBLE);
-                ImageView imageView = (ImageView) findViewById(R.id.image1);
+                imageView = (ImageView) findViewById(R.id.image1);
                 imageView.setImageBitmap(decodeSampledBitmapFromResource(DCMIArray.get(position), 200, 200));
-                positionn = position;
+                photo = decodeSampledBitmapFromResource(DCMIArray.get(position), 200, 200);
+                photoSend = BitmapFactory.decodeFile(DCMIArray.get(position));
+                imageInit = true;
             }
         });
 
     }
+    public void Rotate(View view){
+        if(imageInit==true) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(90);
+            photo = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true);
+            imageView.setImageBitmap(photo);
+            photoSend = Bitmap.createBitmap(photoSend, 0, 0, photoSend.getWidth(), photoSend.getHeight(), matrix, true);
+        }
+    }
+
+    public Bitmap toGrayscale(Bitmap bmpOriginal)
+    {
+        int width, height;
+        height = bmpOriginal.getHeight();
+        width = bmpOriginal.getWidth();
+        Bitmap bmpGrayscale = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+        Canvas c = new Canvas(bmpGrayscale);
+        Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0);
+        ColorMatrixColorFilter f = new ColorMatrixColorFilter(cm);
+        paint.setColorFilter(f);
+        c.drawBitmap(bmpOriginal, 0, 0, paint);
+        return bmpGrayscale;
+    }
 
     public void PostImage2(View view) {
-        Log.d("l", DCMIArray.toString());
-        Log.d("p", DCMIArray.get(positionn));
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        Bitmap bitmap = BitmapFactory.decodeFile(DCMIArray.get(positionn));
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        toGrayscale(photoSend).compress(Bitmap.CompressFormat.JPEG, 100, baos);
         final byte[] imageBytes = baos.toByteArray();
         encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("name", "Majo");
+        params.put("image", encodedImage);
+
         RequestQueue queue = Volley.newRequestQueue(this);
-
-
-        StringRequest postRequest = new StringRequest(Request.Method.POST, url,
-                /*new Response.Listener<JSONObject>() {
+        JsonObjectRequest postRequest= new JsonObjectRequest(Request.Method.POST, url,new JSONObject(params),
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        // response
-                        Log.d("Response", response);
+                        //Log.d("Response: ",response.toString());
+                        skuska(response);
                     }
-                },*/
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("res", response);
-                        vypis(response);
-
-                    }
-                },
-                new Response.ErrorListener() {
+                },new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Error.Response", error.toString());
+                        //Log.d("Error: ", error.getMessage());
                     }
-                }
-        ) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-                Log.d("name", "Martin");
-                params.put("name", "Martin");
-                Log.d("name", encodedImage);
-                params.put("image", encodedImage);
-                return params;
-            }
-        };
+                });
         queue.add(postRequest);
+    }
+
+    public void skuska(JSONObject response) {
+        myAwesomeTextView.setText(response.toString());
     }
 
     public void vypis(String response) {
         String[] numberOfResults = response.split("_____");
-        Log.d("pocet", Integer.toString(numberOfResults.length));
-
         if (numberOfResults.length > 1) {
             Intent intent = new Intent(this, ResponceListActivity.class);
             intent.putExtra("response", response);
             intent.putExtra("image", encodedImage);
             startActivity(intent);
         } else {
-            String[] splitresponse = response.split("=====");
-            Log.d("pocet", Integer.toString(splitresponse.length));
-            Log.d("respon", response);
-            Log.d("Response", splitresponse[0] + splitresponse[1]);
-            Log.d("Znacka", splitresponse[2]);
-            Log.d("poistenie", splitresponse[3]);
-            Log.d("STK, EK", splitresponse[4]);
-            Log.d("Znacka", splitresponse[5]);
-            Log.d("Model", splitresponse[6]);
-            Log.d("Rok vyroby", splitresponse[7]);
-            db.addRecord(new Date(), splitresponse[2], response, splitresponse[0]);
-
             Intent intent = new Intent(this, ListItemActivity.class);
             intent.putExtra("response", response);
             intent.putExtra("image", encodedImage);
@@ -202,7 +193,6 @@ public class GalleryActivity extends Activity {
         return inSampleSize;
     }
 
-
     public static List<String> getCameraImages(Context context) {
         final String[] projection = {MediaStore.Images.Media.DATA};
         final String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
@@ -223,7 +213,6 @@ public class GalleryActivity extends Activity {
         cursor.close();
         return result;
     }
-
 
     public class ImageAdapter extends BaseAdapter {
         private Context context;
@@ -260,7 +249,6 @@ public class GalleryActivity extends Activity {
             imageView.setBackgroundResource(itemBackground);
             return imageView;
         }
-
-
     }
+
 }
