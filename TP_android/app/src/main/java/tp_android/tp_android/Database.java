@@ -84,7 +84,7 @@ public class Database {
     }
 
 
-    public boolean deleteNote(long rowId) {
+    public boolean deleteRecord(long rowId) {
 
         return db.delete(DATABASE_TABLE, KEY_ID + "=" + rowId, null) > 0;
     }
@@ -94,6 +94,12 @@ public class Database {
 
         return db.query(DATABASE_TABLE, new String[]{KEY_ID, KEY_TIME,
                 KEY_ECV, KEY_JSON, KEY_USER}, null, null, null, null, null);
+    }
+
+    public Cursor fetchAllRecordsForUser(String user) {
+
+        return db.query(DATABASE_TABLE, new String[]{KEY_ID, KEY_TIME,
+                KEY_ECV, KEY_JSON, KEY_USER}, KEY_USER + "=" + user, null, null, null, null);
     }
 
     public Cursor fetchRecord(long rowId) throws SQLException {

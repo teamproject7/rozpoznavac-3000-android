@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 public class ResponceListActivity extends AppCompatActivity {
 
@@ -23,7 +22,8 @@ public class ResponceListActivity extends AppCompatActivity {
     private JSONObject jsonResponce;
     private JSONArray dataArray;
     private String photoSend;
-	private Database db;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,11 +32,19 @@ public class ResponceListActivity extends AppCompatActivity {
 
         response = intent.getStringExtra("response");
         photoSend = intent.getStringExtra("photoSend");
-        db = new Database(this);
-        db.open();
 
+        try {
+            jsonResponce = new JSONObject(response);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        try {
+            dataArray = jsonResponce.getJSONArray("data");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
 
         if(dataArray.length() != 1){
             vypis(0);

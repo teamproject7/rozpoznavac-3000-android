@@ -207,5 +207,5 @@ public class CapturephotoActivity extends Activity {
 
 
     }
-            db.addRecord(new Date(), splitresponse[2], response, splitresponse[0]);
+
 }

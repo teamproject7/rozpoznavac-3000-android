@@ -50,8 +50,8 @@ public class ListItemActivity extends AppCompatActivity {
     private JSONArray coordinates = new JSONArray();
 
     private String spz;
-    private Boolean stk ;
-    private Boolean poistenie ;
+    private Boolean stk;
+    private Boolean poistenie;
     private String znacka;
     private String model;
     private String rocnik;
@@ -65,7 +65,7 @@ public class ListItemActivity extends AppCompatActivity {
         response = intent.getStringExtra("response");
         photoSend = (intent.getStringExtra("photoSend"));
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
-        photo  = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         //photo = BitmapFactory.decodeFile(imagePath);
 
         try {
@@ -115,7 +115,7 @@ public class ListItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        for(int i=0; i < coordinates.length(); i++){
+        for (int i = 0; i < coordinates.length(); i++) {
             try {
                 listx.add(((JSONObject) coordinates.getJSONObject(i)).getInt("x"));
                 listy.add(((JSONObject) coordinates.getJSONObject(i)).getInt("y"));
@@ -124,10 +124,10 @@ public class ListItemActivity extends AppCompatActivity {
             }
         }
 
-        x1= Collections.min(listx);
+        x1 = Collections.min(listx);
         Log.d("a", Integer.toString(x1));
         x2 = Collections.max(listx);
-        y1= Collections.min(listy);
+        y1 = Collections.min(listy);
         y2 = Collections.max(listy);
         Log.d("a", Integer.toString(y1));
         Log.d("a", Integer.toString(x2));
@@ -142,33 +142,40 @@ public class ListItemActivity extends AppCompatActivity {
         //byte[] decodedString = Base64.decode(imgresponse, Base64.DEFAULT);
         //Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         Matrix matrix = new Matrix();
-        Bitmap bmp2 = Bitmap.createBitmap(photo, x1, y1, x2-x1, y2-y1);
+        Bitmap bmp2 = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
 
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
         image.setImageBitmap(bmp2);
-        }
+
         buttonSpz.setText(spz);
         buttonSpz.setBackgroundColor(Color.GREEN);
-        if (stk.equals("true")) {
+        if (stk.equals("true"))
+
+        {
             buttonPoistenie.setBackgroundColor(Color.GREEN);
             buttonPoistenie.setText("Zaplatené");
         } else {
             buttonPoistenie.setBackgroundColor(Color.RED);
             buttonPoistenie.setText("Nezaplatené");
         }
-        if (poistenie.equals("true")) {
+        if (poistenie.equals("true"))
+
+        {
             buttonStk.setBackgroundColor(Color.GREEN);
             buttonStk.setText("Platná");
-        } else {
+        } else
+
+        {
             buttonStk.setBackgroundColor(Color.RED);
             buttonStk.setText("Neplatná");
         }
         buttonVozidlo.setText("Info");
 
 
-
         buttonVozidlo.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View view) {
 
@@ -200,5 +207,6 @@ public class ListItemActivity extends AppCompatActivity {
             }
         });
     }
-
 }
+
+
