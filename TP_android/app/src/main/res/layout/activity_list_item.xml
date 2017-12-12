@@ -9,19 +9,20 @@
     tools:context="tp_android.tp_android.ListItemActivity">
 
     <LinearLayout
-        android:paddingTop="10dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_width="366dp"
+        android:layout_height="110dp"
+        android:orientation="horizontal"
+        android:paddingTop="10dp">
 
-        <ImageView android:id="@+id/imageView"
-            android:layout_width="356dp"
-            android:layout_height="258dp"
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
-            android:paddingTop="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="10dp"
-            android:paddingRight="10dp">
+            android:paddingRight="10dp"
+            android:paddingTop="5dp">
 
         </ImageView>
 
@@ -131,6 +132,24 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5"
             android:text=""/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="99dp"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="50dp">
+
+        <Button
+            android:id="@+id/buttonIncorectRecognized"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Zle rozpoznaná značka"
+            android:textSize="20sp" />
 
     </LinearLayout>
 

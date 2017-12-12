@@ -19,6 +19,9 @@ import java.util.TimeZone;
 public class HistoryRecordsActivity extends ListActivity {
 
     private Database db;
+    public static final String MY_PREFS_NAME = "Setting";
+    private SharedPreferences prefs;
+    private String user;
 
 
     @Override
@@ -27,6 +30,8 @@ public class HistoryRecordsActivity extends ListActivity {
         setContentView(R.layout.records_list);
         db = new Database(this);
         db.open();
+        prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        user = prefs.getString("user","");
         fillData();
     }
 
@@ -62,6 +67,8 @@ public class HistoryRecordsActivity extends ListActivity {
 
     private void fillData() {
         // Get all of the notes from the database and create the item list
+
+        //Cursor notesCursor = db.fetchAllRecordsForUser(user);    nejde
         Cursor notesCursor = db.fetchAllRecords();
 
         startManagingCursor(notesCursor);

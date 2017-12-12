@@ -1,16 +1,25 @@
 package tp_android.tp_android;
 
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.content.SharedPreferences;
 import android.widget.Switch;
 import android.widget.CompoundButton;
+import android.util.Log;
 
 public class ApplicationSettingActivity extends AppCompatActivity {
-
-    TextView tvProgressLabel;
+    private Database db;
+    private TextView tvProgressLabel;
+    private TextView userView;
+    private EditText userEdit;
+    private Button changeUserButton;
+    private Button deleteUserData;
     public static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences.Editor editor;
 
@@ -20,11 +29,12 @@ public class ApplicationSettingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_setting);
         Switch switchButton, switchButton2;
-        // set a change listener on the SeekBar
+
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         int comprimation = prefs.getInt("comprimation", 100);
         boolean colored = prefs.getBoolean("colored",true);
         boolean saving = prefs.getBoolean("saving", true);
+        final String user = prefs.getString("user", "");
         editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
 
         SeekBar seekBar = findViewById(R.id.comprimation);
@@ -34,7 +44,11 @@ public class ApplicationSettingActivity extends AppCompatActivity {
         tvProgressLabel.setText("Set compriamtion of sending images: " + comprimation + " %");
         int progress = seekBar.getProgress();
         seekBar.setProgress(comprimation);
-
+        changeUserButton = (Button) findViewById(R.id.buttonUser);
+        deleteUserData = (Button) findViewById(R.id.buttonDelete);
+        userView = (TextView) findViewById(R.id.textViewUser);
+        userEdit = (EditText) findViewById(R.id.editTextUser);
+        userView.setText("User name: " + user);
 
 
         switchButton = (Switch) findViewById(R.id.colored);
@@ -67,7 +81,23 @@ public class ApplicationSettingActivity extends AppCompatActivity {
             }
         });
 
-
+        changeUserButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                userView.setText("User name: " + userEdit.getText());
+                editor.putString("user", userEdit.getText().toString());
+                userEdit.setText("");
+                editor.apply();
+            }
+        });
+        deleteUserData.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db = new Database(ApplicationSettingActivity.this);
+                db.open();
+                //Cursor cr = db.fetchAllRecordsForUser(user);
+            }
+        });
 
     }
 

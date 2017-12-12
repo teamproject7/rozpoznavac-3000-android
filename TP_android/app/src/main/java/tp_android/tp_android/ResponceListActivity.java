@@ -1,5 +1,6 @@
 package tp_android.tp_android;
 
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
@@ -26,7 +27,10 @@ public class ResponceListActivity extends AppCompatActivity {
     private String photoSend;
     private Database db;
     private ArrayList<Long> recordID = new ArrayList<Long>();
-
+    private SharedPreferences prefs;
+    public static final String MY_PREFS_NAME = "Setting";
+    private String user;
+    private Boolean saving;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,10 @@ public class ResponceListActivity extends AppCompatActivity {
 
         response = intent.getStringExtra("response");
         photoSend = intent.getStringExtra("photoSend");
+
+        prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        user = prefs.getString("user","");
+        saving = prefs.getBoolean("saving", true);
 
         try {
             jsonResponce = new JSONObject(response);
@@ -51,44 +59,34 @@ public class ResponceListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-
-        if(dataArray.length() == 1){
+        for(int i=0; i < dataArray.length(); i++){
             try {
-                JSONObject item = (JSONObject)dataArray.get(0);
+                JSONObject item = (JSONObject)dataArray.get(i);
                 list.add(item.getString("plate"));
-                Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"),item.toString(), "majo");
-                Log.d("id",id.toString() );
-                recordID.add(id);
+                if(saving==true){
+                    Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"),item.toString(), user);
+                    Log.d("id",id.toString() );
+                    recordID.add(id);
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            vypis(0);
         }
-        else {
-            for(int i=0; i < dataArray.length(); i++){
-                try {
-                    JSONObject item = (JSONObject)dataArray.get(i);
-                    list.add(item.getString("plate"));
-                    Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"),item.toString(), "maj");
-                    Log.d("id",id.toString() );
-                    recordID.add(id);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
-            }
-
-            lv = (ListView) findViewById(R.id.list_view);
-            ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list );
-            lv.setAdapter(arrayAdapter);
-            lv.setClickable(true);
+        lv = (ListView) findViewById(R.id.list_view);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, list );
+        lv.setAdapter(arrayAdapter);
+        lv.setClickable(true);
+        if(dataArray.length() > 1){
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                     vypis(position);
                 }
             });
-
+        }
+        else{
+            vypis(0);
         }
     }
 
@@ -100,12 +98,12 @@ public class ResponceListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         intent.putExtra("photoSend", photoSend);
-        intent.putExtra("recordID", recordID.get(position));
+        if(saving==true){
+            intent.putExtra("recordID", recordID.get(position));
+        }
         startActivity(intent);
-        if(position == 0){
+        if(dataArray.length() == 1){
             this.finish();
         }
-
-
     }
 }

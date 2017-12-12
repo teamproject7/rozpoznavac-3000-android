@@ -37,6 +37,7 @@ public class ListItemActivity extends AppCompatActivity {
     private Button buttonPoistenie;
     private Button buttonStk;
     private Button buttonVozidlo;
+    private Button buttonZleRozpoznanie;
     private PopupWindow mPopupWindow;
     private Bitmap photo;
     private JSONObject jsonResponce;
@@ -56,6 +57,7 @@ public class ListItemActivity extends AppCompatActivity {
     private String model;
     private String rocnik;
     private Long recordID;
+    private Bitmap bmp2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +67,12 @@ public class ListItemActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         response = intent.getStringExtra("response");
         photoSend = (intent.getStringExtra("photoSend"));
-        recordID = (intent.getLongExtra("recordID", -1));
+        recordID = (intent.getLongExtra("recordID",-1));
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         //photo = BitmapFactory.decodeFile(imagePath);
+
+
 
         try {
             jsonResponce = new JSONObject(response);
@@ -141,10 +145,17 @@ public class ListItemActivity extends AppCompatActivity {
         buttonPoistenie = (Button) findViewById(R.id.buttonPoistenie);
         buttonStk = (Button) findViewById(R.id.buttonStk);
         buttonVozidlo = (Button) findViewById(R.id.buttonVozidlo);
+        buttonZleRozpoznanie = (Button) findViewById(R.id.buttonIncorectRecognized);
         //byte[] decodedString = Base64.decode(imgresponse, Base64.DEFAULT);
         //Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         Matrix matrix = new Matrix();
-        Bitmap bmp2 = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
+        bmp2 = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
+        final ArrayList<Integer> docasne = new ArrayList<Integer>();
+        docasne.add(x1);
+        docasne.add(y1);
+        docasne.add(x2);
+        docasne.add(y2);
+
 
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
@@ -177,7 +188,6 @@ public class ListItemActivity extends AppCompatActivity {
 
         buttonVozidlo.setOnClickListener(new View.OnClickListener() {
 
-
             @Override
             public void onClick(View view) {
 
@@ -206,6 +216,20 @@ public class ListItemActivity extends AppCompatActivity {
                     }
                 });
                 mPopupWindow.showAtLocation(mLinearLayout, Gravity.CENTER, 0, 0);
+            }
+        });
+
+
+        buttonZleRozpoznanie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ListItemActivity.this, IncorrectRecognizedPlateActivity.class);
+                intent.putExtra("coord", coordinates.toString());
+                intent.putExtra("photoSend", photoSend);
+                intent.putExtra("recordID", recordID);
+                intent.putIntegerArrayListExtra("docasne",docasne);
+                startActivity(intent);
+                ListItemActivity.this.finish();
             }
         });
     }

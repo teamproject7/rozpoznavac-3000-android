@@ -19,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
         editor.putBoolean("saving", true);
         editor.putBoolean("colored", true);
-        editor.putInt("comprimation", 75);
+        editor.putInt("comprimation", 100);
+        editor.putString("user", "Admin");
         editor.apply();
     }
 
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void Gallery2Image(View view) {
-        Intent intent = new Intent(this, Gallery2Activity.class);
+        Intent intent = new Intent(this, GalleryActivity.class);
         startActivity(intent);
 
     }

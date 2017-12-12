@@ -31,14 +31,12 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".CapturephotoActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".GalleryActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".HistoryRecordsActivity"
@@ -50,7 +48,7 @@
             android:name=".ResponceListActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Gallery2Activity"
+            android:name=".GalleryActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".GalleryItemViewActivity"
@@ -58,7 +56,8 @@
         <activity
             android:name=".ResponceErrorActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ApplicationSettingActivity"></activity>
+        <activity android:name=".ApplicationSettingActivity" />
+        <activity android:name=".IncorrectRecognizedPlateActivity"></activity>
     </application>
 
 </manifest>
