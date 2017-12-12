@@ -91,7 +91,7 @@ public class CapturephotoActivity extends Activity {
     private Context context;
     private boolean imageInit = false;
     private LinearLayout mLinearLayout;
-    private String url = "http://108.61.179.124:80/spz_img/";
+    private String url = "http://108.61.179.124:7486/spz_img/";
     private int comprimation;
     private boolean colored;
     private boolean saving;
@@ -106,8 +106,7 @@ public class CapturephotoActivity extends Activity {
         setContentView(R.layout.activity_capturephoto);
         mLinearLayout = (LinearLayout) findViewById(R.id.rl_captured_photo);
         context = getApplicationContext();
-		db = new Database(this);
-        db.open();
+
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         comprimation = prefs.getInt("comprimation", 100);
         colored = prefs.getBoolean("colored",true);

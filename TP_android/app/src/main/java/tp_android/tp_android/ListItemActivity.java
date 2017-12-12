@@ -55,6 +55,7 @@ public class ListItemActivity extends AppCompatActivity {
     private String znacka;
     private String model;
     private String rocnik;
+    private Long recordID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +65,7 @@ public class ListItemActivity extends AppCompatActivity {
         mContext = getApplicationContext();
         response = intent.getStringExtra("response");
         photoSend = (intent.getStringExtra("photoSend"));
+        recordID = (intent.getLongExtra("recordID", -1));
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         //photo = BitmapFactory.decodeFile(imagePath);

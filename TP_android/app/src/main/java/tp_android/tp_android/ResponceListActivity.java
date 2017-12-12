@@ -13,6 +13,8 @@ import org.json.JSONObject;
 import org.json.JSONArray;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import android.util.Log;
 
 public class ResponceListActivity extends AppCompatActivity {
 
@@ -22,11 +24,15 @@ public class ResponceListActivity extends AppCompatActivity {
     private JSONObject jsonResponce;
     private JSONArray dataArray;
     private String photoSend;
+    private Database db;
+    private ArrayList<Long> recordID = new ArrayList<Long>();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        db = new Database(this);
+        db.open();
         setContentView(R.layout.activity_responce_list);
         Intent intent = getIntent();
 
@@ -46,7 +52,16 @@ public class ResponceListActivity extends AppCompatActivity {
         }
 
 
-        if(dataArray.length() != 1){
+        if(dataArray.length() == 1){
+            try {
+                JSONObject item = (JSONObject)dataArray.get(0);
+                list.add(item.getString("plate"));
+                Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"),item.toString(), "majo");
+                Log.d("id",id.toString() );
+                recordID.add(id);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             vypis(0);
         }
         else {
@@ -54,9 +69,13 @@ public class ResponceListActivity extends AppCompatActivity {
                 try {
                     JSONObject item = (JSONObject)dataArray.get(i);
                     list.add(item.getString("plate"));
+                    Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"),item.toString(), "maj");
+                    Log.d("id",id.toString() );
+                    recordID.add(id);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
             }
 
             lv = (ListView) findViewById(R.id.list_view);
@@ -81,8 +100,9 @@ public class ResponceListActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         intent.putExtra("photoSend", photoSend);
+        intent.putExtra("recordID", recordID.get(position));
         startActivity(intent);
-        if(position != 0){
+        if(position == 0){
             this.finish();
         }
 

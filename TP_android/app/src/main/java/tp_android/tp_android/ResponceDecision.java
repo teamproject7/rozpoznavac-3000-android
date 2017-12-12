@@ -32,7 +32,7 @@ public abstract class ResponceDecision {
                 noLicencePlateFound(jsonResponce, parentActivity);
                 break;
 
-            case "LICENCE_PLATE_FOUND":
+            case "SUCCESS":
                 licencePlateFound(jsonResponce, parentActivity, response, encodedImage);
                 break;
 

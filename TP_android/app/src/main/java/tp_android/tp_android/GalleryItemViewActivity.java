@@ -44,7 +44,7 @@ import android.content.SharedPreferences;
 public class GalleryItemViewActivity extends AppCompatActivity {
 
     private Context context;
-    private String url = "http://108.61.179.124:80/spz_img/";
+    private String url = "http://108.61.179.124:7486/spz_img/";
     private ImageView imageView;
     private Button sendButton;
     private Bitmap photo;
