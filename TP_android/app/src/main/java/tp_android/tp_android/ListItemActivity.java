@@ -1,6 +1,7 @@
 package tp_android.tp_android;
 
 import android.graphics.Matrix;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
@@ -39,16 +40,10 @@ public class ListItemActivity extends AppCompatActivity {
     private Button buttonVozidlo;
     private Button buttonZleRozpoznanie;
     private PopupWindow mPopupWindow;
+    private ImageView image;
     private Bitmap photo;
     private JSONObject jsonResponce;
-    private ArrayList<Integer> listx = new ArrayList<>();
-    private ArrayList<Integer> listy = new ArrayList<>();
-    private Integer x1;
-    private Integer x2;
-    private Integer y1;
-    private Integer y2;
     private String photoSend;
-    private JSONArray coordinates = new JSONArray();
 
     private String spz;
     private Boolean stk;
@@ -57,7 +52,6 @@ public class ListItemActivity extends AppCompatActivity {
     private String model;
     private String rocnik;
     private Long recordID;
-    private Bitmap bmp2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,10 +62,9 @@ public class ListItemActivity extends AppCompatActivity {
         response = intent.getStringExtra("response");
         photoSend = (intent.getStringExtra("photoSend"));
         recordID = (intent.getLongExtra("recordID",-1));
+
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
-
 
         try {
             jsonResponce = new JSONObject(response);
@@ -113,58 +106,19 @@ public class ListItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        /*try {
-            coordinates = (((JSONArray) jsonResponce.getJSONArray("coordinates")));
-            Log.d("coordinates", coordinates.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }*/
-
-        /*for (int i = 0; i < coordinates.length(); i++) {
-            try {
-                listx.add(((JSONObject) coordinates.getJSONObject(i)).getInt("x"));
-                listy.add(((JSONObject) coordinates.getJSONObject(i)).getInt("y"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
-        x1 = Collections.min(listx);
-        Log.d("a", Integer.toString(x1));
-        x2 = Collections.max(listx);
-        y1 = Collections.min(listy);
-        y2 = Collections.max(listy);
-        Log.d("a", Integer.toString(y1));
-        Log.d("a", Integer.toString(x2));
-        Log.d("a", Integer.toString(y2));
-
-*/
         mLinearLayout = (LinearLayout) findViewById(R.id.rl);
         buttonSpz = (Button) findViewById(R.id.buttonSpz);
         buttonPoistenie = (Button) findViewById(R.id.buttonPoistenie);
         buttonStk = (Button) findViewById(R.id.buttonStk);
         buttonVozidlo = (Button) findViewById(R.id.buttonVozidlo);
         buttonZleRozpoznanie = (Button) findViewById(R.id.buttonIncorectRecognized);
-        /*
-        //byte[] decodedString = Base64.decode(imgresponse, Base64.DEFAULT);
-        //Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        Matrix matrix = new Matrix();
-        bmp2 = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
-        final ArrayList<Integer> docasne = new ArrayList<Integer>();
-        docasne.add(x1);
-        docasne.add(y1);
-        docasne.add(x2);
-        docasne.add(y2);*/
+        image = (ImageView) findViewById(R.id.imageView);
 
-
-        ImageView image = (ImageView) findViewById(R.id.imageView);
 
         image.setImageBitmap(photo);
-
         buttonSpz.setText(spz);
         buttonSpz.setBackgroundColor(Color.GREEN);
         if (stk.equals("true"))
-
         {
             buttonPoistenie.setBackgroundColor(Color.GREEN);
             buttonPoistenie.setText("Zaplatené");
@@ -172,8 +126,8 @@ public class ListItemActivity extends AppCompatActivity {
             buttonPoistenie.setBackgroundColor(Color.RED);
             buttonPoistenie.setText("Nezaplatené");
         }
-        if (poistenie.equals("true"))
 
+        if (poistenie.equals("true"))
         {
             buttonStk.setBackgroundColor(Color.GREEN);
             buttonStk.setText("Platná");
@@ -184,7 +138,6 @@ public class ListItemActivity extends AppCompatActivity {
             buttonStk.setText("Neplatná");
         }
         buttonVozidlo.setText("Info");
-
 
         buttonVozidlo.setOnClickListener(new View.OnClickListener() {
 
@@ -224,10 +177,8 @@ public class ListItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ListItemActivity.this, IncorrectRecognizedPlateActivity.class);
-                //intent.putExtra("coord", coordinates.toString());
                 intent.putExtra("photoSend", photoSend);
                 intent.putExtra("recordID", recordID);
-                //intent.putIntegerArrayListExtra("docasne",docasne);
                 startActivity(intent);
                 ListItemActivity.this.finish();
             }

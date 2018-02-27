@@ -29,7 +29,7 @@ public class GalleryItemViewActivity extends AppCompatActivity {
 
     public static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences prefs;
-    private int comprimation;
+    private float comprimation;
     private boolean colored;
     private String user;
 
@@ -43,7 +43,7 @@ public class GalleryItemViewActivity extends AppCompatActivity {
         path = intent.getStringExtra("path");
 
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        comprimation = prefs.getInt("comprimation", 100);
+        comprimation = prefs.getFloat("comprimation", 2);
         colored = prefs.getBoolean("colored",true);
         user = prefs.getString("user","");
 
@@ -55,18 +55,35 @@ public class GalleryItemViewActivity extends AppCompatActivity {
         File file = new File(path);
         file_length = file.length()/(1024*1024);
 
-        if(file_length>=0.9)
-            if(colored==true){
-                photo = BitmapHelper.decodePathMaxSize(path,32,0.9);
-                photo_send = BitmapHelper.decodePathMaxSize(path,32,2.0);
-            }
-            else{
-                photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,0.9));
-                photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,2.0));
+        if(file_length>=0.9){
+            if(file_length>comprimation){
+                if(colored==true){
+                    photo = BitmapHelper.decodePathMaxSize(path,32,0.9);
+                    photo_send = BitmapHelper.decodePathMaxSize(path,32,comprimation);
+                }
+                else{
+                    photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,0.9));
+                    photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,comprimation));
+                }
                 float ratio2 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 0.9);
-                float ratio1 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 2.0);
+                float ratio1 = BitmapHelper.decodePathMaxSizeRatio(path, 32, comprimation);
                 ratio = ratio2/ratio1;
             }
+            else{
+                if(colored==true){
+                    photo = BitmapHelper.decodePathMaxSize(path,32,0.9);
+                    photo_send = BitmapFactory.decodeFile(path);
+                }
+                else{
+                    photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,0.9));
+                    photo_send = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
+                }
+                float ratio2 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 0.9);
+                float ratio1 = 1;
+                ratio = ratio2/ratio1;
+            }
+
+        }
         else {
             if (colored == true) {
                 photo = BitmapFactory.decodeFile(path);

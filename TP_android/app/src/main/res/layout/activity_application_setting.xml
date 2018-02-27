@@ -4,52 +4,51 @@
     android:id="@+id/rl_galelry_item_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2F4F4F"
+    android:background="#dbdfdf"
     android:orientation="vertical"
     android:paddingBottom="10dp"
-    android:paddingLeft="5dp"
-    android:paddingRight="5dp"
-    android:paddingTop="10dp"
+    android:paddingLeft="25dp"
+    android:paddingRight="25dp"
+    android:paddingTop="50dp"
     android:scaleType="fitCenter"
     tools:context="tp_android.tp_android.ApplicationSettingActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout1"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
-        android:paddingLeft="100dp"
-        android:paddingRight="10dp"
-        android:paddingTop="30dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:visibility="visible">
 
         <Switch
             android:id="@+id/colored"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
             android:checked="true"
-            android:text="Colored images"
+            android:text="Farebné obrázky"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
             tools:checked="true" />
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
-        android:paddingLeft="100dp"
-        android:paddingRight="10dp"
-        android:paddingTop="30dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:visibility="visible">
 
         <Switch
             android:id="@+id/saving"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            android:checked="true"
-            android:text="Saving responses"
+            android:text="Ukladať rozpoznané značky"
+            android:textColor="@android:color/black"
+            android:textSize="14sp"
             tools:checked="true" />
     </LinearLayout>
 
@@ -57,90 +56,58 @@
         android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
-        android:paddingLeft="50dp"
-        android:paddingRight="10dp"
-        android:paddingTop="30dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Set compriamtion of sending images"
-            android:textColor="#000000" />
+            android:text="Maximálna veľkosť posielaného obrázku (1-5MBi): "
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
+
+
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout4"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="20dp">
+        android:paddingBottom="20dp"
+        android:visibility="visible">
 
         <SeekBar
             android:id="@+id/comprimation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:progress="100"
-            android:max="100"
-            android:min="25"/>
+            android:fadeScrollbars="false"
+            android:max="5"
+            android:min="1"
+            android:progress="2" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/linearLayout5"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:paddingLeft="50dp"
-        android:paddingRight="10dp"
-        android:paddingTop="30dp">
-
-        <TextView
-            android:id="@+id/textViewUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:textColor="#000000" />
-        <EditText
-            android:id="@+id/editTextUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:textColor="#000000" />
-        <Button
-            android:id="@+id/buttonUser"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:text="Change user"
-            android:textColor="#000000" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/linearLayout6"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:orientation="horizontal"
-        android:paddingLeft="50dp"
-        android:paddingRight="10dp"
-        android:paddingTop="30dp">
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:visibility="visible">
 
         <Button
             android:id="@+id/buttonDelete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Delete user records"
-            android:textColor="#000000" />
+            android:text="Vymazať históriu"
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
     </LinearLayout>
 
 </LinearLayout>

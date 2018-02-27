@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Paint;
-import android.util.FloatProperty;
 import android.util.Log;
 
 public abstract class BitmapHelper {
@@ -16,20 +15,12 @@ public abstract class BitmapHelper {
         Bitmap image = BitmapFactory.decodeFile(path);
 
         int maxImageSize = (int)(Math.sqrt((MBsize*(8.0/bitDeep)*1024.0*1024.0)));
-        Log.d("first",  Integer.toString(maxImageSize));
-        Log.d("x", Integer.toString(image.getWidth()));
-        Log.d("y",Integer.toString(image.getHeight()));
         float ratio = Math.min(
                     (float) maxImageSize / image.getWidth(),
                     (float) maxImageSize / image.getHeight());
             int width = Math.round((float) ratio * image.getWidth());
             int height = Math.round((float) ratio * image.getHeight());
 
-        Log.d("second", Integer.toString(width*height));
-        Log.d("wr", Integer.toString(Math.round((float) ratio * image.getWidth())));
-        Log.d("w", Float.toString(ratio * image.getWidth()));
-        Log.d("hr", Integer.toString(Math.round((float) ratio * image.getHeight())));
-        Log.d("h", Float.toString(ratio * image.getHeight()));
 
         if((width>image.getWidth()) || (height>image.getHeight())){
             return Bitmap.createScaledBitmap(image, image.getWidth(),image.getHeight(),true);
@@ -43,20 +34,12 @@ public abstract class BitmapHelper {
         Bitmap image = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
 
         int maxImageSize = (int)(Math.sqrt((MBsize*(8.0/bitDeep)*1024.0*1024.0)));
-        Log.d("first", Integer.toString(maxImageSize));
-        Log.d("x", Integer.toString(image.getWidth()));
-        Log.d("y",Integer.toString(image.getHeight()));
         float ratio = Math.min(
                 (float) maxImageSize / image.getWidth(),
                 (float) maxImageSize / image.getHeight());
         int width = Math.round((float) ratio * image.getWidth());
         int height = Math.round((float) ratio * image.getHeight());
 
-        Log.d("second", Integer.toString(width*height));
-        Log.d("wr", Integer.toString(Math.round((float) ratio * image.getWidth())));
-        Log.d("w", Float.toString(ratio * image.getWidth()));
-        Log.d("hr", Integer.toString(Math.round((float) ratio * image.getHeight())));
-        Log.d("h", Float.toString(ratio * image.getHeight()));
 
         if((width>image.getWidth()) || (height>image.getHeight())){
             return Bitmap.createScaledBitmap(image, image.getWidth(),image.getHeight(),true);
@@ -70,16 +53,11 @@ public abstract class BitmapHelper {
         Bitmap image = BitmapFactory.decodeFile(path);
 
         int maxImageSize = (int)(Math.sqrt((MBsize*(8.0/bitDeep)*1024.0*1024.0)));
-        Log.d("first",  Integer.toString(maxImageSize));
-        Log.d("x", Integer.toString(image.getWidth()));
-        Log.d("y",Integer.toString(image.getHeight()));
         float ratio = Math.min(
                 (float) maxImageSize / image.getWidth(),
                 (float) maxImageSize / image.getHeight());
         int width = Math.round((float) ratio * image.getWidth());
         int height = Math.round((float) ratio * image.getHeight());
-
-        Log.d("ratio",Float.toString(ratio));
 
         if((width>image.getWidth()) || (height>image.getHeight())){
             return 1;
@@ -93,16 +71,12 @@ public abstract class BitmapHelper {
         Bitmap image = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
 
         int maxImageSize = (int)(Math.sqrt((MBsize*(8.0/bitDeep)*1024.0*1024.0)));
-        Log.d("first", Integer.toString(maxImageSize));
-        Log.d("x", Integer.toString(image.getWidth()));
-        Log.d("y",Integer.toString(image.getHeight()));
         float ratio = Math.min(
                 (float) maxImageSize / image.getWidth(),
                 (float) maxImageSize / image.getHeight());
         int width = Math.round((float) ratio * image.getWidth());
         int height = Math.round((float) ratio * image.getHeight());
 
-        Log.d("ratio",Float.toString(ratio));
 
         if((width>image.getWidth()) || (height>image.getHeight())){
             return 1;
@@ -168,9 +142,7 @@ public abstract class BitmapHelper {
                 inSampleSize *= 2;
             }
         }
-
         return inSampleSize;
-
     }
 
     public static Bitmap toGrayscale(Bitmap bmpOriginal) {
@@ -187,5 +159,4 @@ public abstract class BitmapHelper {
         c.drawBitmap(bmpOriginal, 0, 0, paint);
         return bmpGrayscale;
     }
-
 }

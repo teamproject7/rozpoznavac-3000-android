@@ -16,9 +16,6 @@ import android.util.Log;
 public class ApplicationSettingActivity extends AppCompatActivity {
     private Database db;
     private TextView tvProgressLabel;
-    private TextView userView;
-    private EditText userEdit;
-    private Button changeUserButton;
     private Button deleteUserData;
     public static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences.Editor editor;
@@ -31,7 +28,7 @@ public class ApplicationSettingActivity extends AppCompatActivity {
         Switch switchButton, switchButton2;
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        int comprimation = prefs.getInt("comprimation", 100);
+        Float comprimation = prefs.getFloat("comprimation", 2);
         boolean colored = prefs.getBoolean("colored",true);
         boolean saving = prefs.getBoolean("saving", true);
         final String user = prefs.getString("user", "");
@@ -41,14 +38,9 @@ public class ApplicationSettingActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
         tvProgressLabel = findViewById(R.id.textView);
-        tvProgressLabel.setText("Set compriamtion of sending images: " + comprimation + " %");
-        int progress = seekBar.getProgress();
-        seekBar.setProgress(comprimation);
-        changeUserButton = (Button) findViewById(R.id.buttonUser);
+        tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MBi):  " + comprimation + " MBi");
+        seekBar.setProgress(Math.round(comprimation));
         deleteUserData = (Button) findViewById(R.id.buttonDelete);
-        userView = (TextView) findViewById(R.id.textViewUser);
-        userEdit = (EditText) findViewById(R.id.editTextUser);
-        userView.setText("User name: " + user);
 
 
         switchButton = (Switch) findViewById(R.id.colored);
@@ -81,21 +73,12 @@ public class ApplicationSettingActivity extends AppCompatActivity {
             }
         });
 
-        changeUserButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                userView.setText("User name: " + userEdit.getText());
-                editor.putString("user", userEdit.getText().toString());
-                userEdit.setText("");
-                editor.apply();
-            }
-        });
         deleteUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 db = new Database(ApplicationSettingActivity.this);
                 db.open();
-                //Cursor cr = db.fetchAllRecordsForUser(user);
+                db.deletadeAllRecord(user);
             }
         });
 
@@ -106,7 +89,7 @@ public class ApplicationSettingActivity extends AppCompatActivity {
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
             // updated continuously as the user slides the thumb
-            tvProgressLabel.setText("Set compriamtion of sending images: " + progress + " %");
+            tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MBi):  " + progress + " MBi");
         }
 
         @Override
@@ -116,7 +99,7 @@ public class ApplicationSettingActivity extends AppCompatActivity {
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            editor.putInt("comprimation", seekBar.getProgress());
+            editor.putFloat("comprimation", seekBar.getProgress());
             editor.apply();
             // called after the user finishes moving the SeekBar
         }

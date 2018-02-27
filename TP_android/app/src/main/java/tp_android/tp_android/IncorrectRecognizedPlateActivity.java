@@ -23,10 +23,12 @@ public class IncorrectRecognizedPlateActivity extends AppCompatActivity {
 
     private LinearLayout mLinearLayout;
     private Button sendButton;
-
+    private ImageView image;
     private EditText ecv;
-    private String coord;
+
     private Long recordID;
+    private Bitmap photo;
+    private String photoSend;
 
     private SharedPreferences prefs;
     public static final String MY_PREFS_NAME = "Setting";
@@ -34,8 +36,7 @@ public class IncorrectRecognizedPlateActivity extends AppCompatActivity {
     private Boolean saving;
 
 
-    private Bitmap photo;
-    private String photoSend;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,32 +45,25 @@ public class IncorrectRecognizedPlateActivity extends AppCompatActivity {
         Intent intent = getIntent();
         context = getApplicationContext();
         photoSend = intent.getStringExtra("photoSend");
-        //coord = intent.getStringExtra("coord");
         recordID = intent.getLongExtra("recordID", -1);
+
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         user = prefs.getString("user","");
         saving = prefs.getBoolean("saving", true);
-        //ArrayList<Integer> docasne  = intent.getIntegerArrayListExtra("docasne");
 
-
+        image = (ImageView) findViewById(R.id.image1);
+        mLinearLayout = (LinearLayout) findViewById(R.id.rl_incorrect);
+        sendButton = (Button) findViewById(R.id.send);
+        ecv = (EditText) findViewById(R.id.ecv);
 
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        //Matrix matrix = new Matrix();
-        ImageView image = (ImageView) findViewById(R.id.image1);
-        //image.setImageBitmap(Bitmap.createBitmap(photo, docasne.get(0), docasne.get(1), docasne.get(2) - docasne.get(0), docasne.get(3) - docasne.get(1)));
+
         image.setImageBitmap(photo);
-
-        mLinearLayout = (LinearLayout) findViewById(R.id.rl_incorrect);
-
-        sendButton = (Button) findViewById(R.id.send);
-
-        ecv = (EditText) findViewById(R.id.ecv);
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // ApiPostRequest.PostApi2(ecv.getText().toString(),saving, user, recordID, IncorrectRecognizedPlateActivity.this,context, mLinearLayout, photoSend, coord );
                 ApiPostRequest.PostApi2(ecv.getText().toString(),saving, user, recordID, IncorrectRecognizedPlateActivity.this,context, mLinearLayout, photoSend);
             }
         });

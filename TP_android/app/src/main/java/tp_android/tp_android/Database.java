@@ -92,6 +92,10 @@ public class Database {
         return db.delete(DATABASE_TABLE, KEY_ID + "=" + rowId, null) > 0;
     }
 
+    public boolean deletadeAllRecord(String user) {
+        return db.delete(DATABASE_TABLE, KEY_USER + "=" + user, null) > 0;
+    }
+
 
     public Cursor fetchAllRecords() {
 

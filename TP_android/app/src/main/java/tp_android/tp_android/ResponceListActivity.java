@@ -3,15 +3,12 @@ package tp_android.tp_android;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
 import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView;
 
@@ -41,11 +38,6 @@ public class ResponceListActivity extends AppCompatActivity {
     public static final String MY_PREFS_NAME = "Setting";
     private String user;
     private Boolean saving;
-    private Integer x1;
-    private Integer x2;
-    private Integer y1;
-    private Integer y2;
-    private JSONArray coordinates = new JSONArray();
     private Bitmap photo;
     private ArrayList<String> spzList = new ArrayList<String>();
 
@@ -56,10 +48,10 @@ public class ResponceListActivity extends AppCompatActivity {
         db.open();
         setContentView(R.layout.activity_responce_list);
         Intent intent = getIntent();
-
         response = intent.getStringExtra("response");
         photoSend = intent.getStringExtra("photoSend");
         ratio = intent.getFloatExtra("ratio", 1);
+
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
@@ -80,14 +72,18 @@ public class ResponceListActivity extends AppCompatActivity {
         }
 
         for(int i=0; i < dataArray.length(); i++){
+            Integer x1;
+            Integer x2;
+            Integer y1;
+            Integer y2;
             ArrayList<Integer> listx = new ArrayList<>();
             ArrayList<Integer> listy = new ArrayList<>();
+            JSONArray coordinates = new JSONArray();
             try {
                 JSONObject item = (JSONObject)dataArray.get(i);
                 list.add(item.getString("plate"));
                 try {
                     coordinates = (((JSONArray) item.getJSONArray("coordinates")));
-                    Log.d("coordinates", coordinates.toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -106,12 +102,6 @@ public class ResponceListActivity extends AppCompatActivity {
                 y1 = Math.round(Collections.min(listy)*ratio);
                 y2 = Math.round(Collections.max(listy)*ratio);
 
-                Log.d("x1", (Collections.min(listx)).toString());
-                Log.d("ratio", ratio.toString());
-                Log.d("x11", (x1).toString());
-
-
-                Matrix matrix = new Matrix();
                 Bitmap bmp = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -121,7 +111,6 @@ public class ResponceListActivity extends AppCompatActivity {
 
                 if(saving==true){
                     Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"), encodedImage, item.toString() , user);
-                    Log.d("id",id.toString() );
                     recordID.add(id);
                 }
             } catch (JSONException e) {

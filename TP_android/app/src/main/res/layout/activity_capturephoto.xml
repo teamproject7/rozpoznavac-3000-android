@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2F4F4F"
+    android:background="#dbdfdf"
     android:orientation="vertical"
     android:id="@+id/rl_captured_photo"
     android:paddingTop="30dp"

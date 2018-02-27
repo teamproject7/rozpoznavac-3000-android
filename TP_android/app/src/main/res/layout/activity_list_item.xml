@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rl"
-    android:background="#2F4F4F"
+    android:background="#dbdfdf"
     android:orientation="vertical"
     tools:context="tp_android.tp_android.ListItemActivity">
 

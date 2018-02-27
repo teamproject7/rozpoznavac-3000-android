@@ -107,7 +107,6 @@ public abstract class ResponceDecision {
 
         Intent intent = new Intent(parentActivity, ListItemActivity.class);
         intent.putExtra("response",dataArray.toString());
-        //intent.putExtra("coord", coord);
         intent.putExtra("photoSend", photoSend);
         intent.putExtra("recordID", recordID);
         parentActivity.startActivity(intent);

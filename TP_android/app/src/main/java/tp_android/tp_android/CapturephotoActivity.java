@@ -38,7 +38,7 @@ public class CapturephotoActivity extends Activity {
     private static final int CAMERA_REQUEST = 1888;
     private SharedPreferences prefs;
     public static final String MY_PREFS_NAME = "Setting";
-    private int comprimation;
+    private float comprimation;
     private boolean colored;
     private String user;
 
@@ -51,7 +51,7 @@ public class CapturephotoActivity extends Activity {
         context = getApplicationContext();
 
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        comprimation = prefs.getInt("comprimation", 100);
+        comprimation = prefs.getFloat("comprimation", 2);
         colored = prefs.getBoolean("colored",true);
         user = prefs.getString("user","");
 
@@ -97,17 +97,33 @@ public class CapturephotoActivity extends Activity {
             file_length = byteArray.length/(1024*1024);
 
             if(file_length>0.9){
-                if(colored==true){
-                    photo = BitmapHelper.decodeByteArrayMaxSize(byteArray,32,0.9);
-                    photo_send = BitmapHelper.decodeByteArrayMaxSize(byteArray,32,2.0);
+                if(file_length>comprimation){
+                    if(colored==true){
+                        photo = BitmapHelper.decodeByteArrayMaxSize(byteArray,32,0.9);
+                        photo_send = BitmapHelper.decodeByteArrayMaxSize(byteArray,32,comprimation);
+                    }
+                    else{
+                        photo = BitmapHelper.toGrayscale(BitmapHelper.decodeByteArrayMaxSize(byteArray,32,0.9));
+                        photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodeByteArrayMaxSize(byteArray,32,comprimation));
+                    }
+                    float ratio2 = BitmapHelper.decodeByteArrayMaxSizeRatio(byteArray, 32,0.9);
+                    float ratio1 = BitmapHelper.decodeByteArrayMaxSizeRatio(byteArray, 32, comprimation);
+                    ratio = ratio2/ratio1;
                 }
                 else{
-                    photo = BitmapHelper.toGrayscale(BitmapHelper.decodeByteArrayMaxSize(byteArray,32,0.9));
-                    photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodeByteArrayMaxSize(byteArray,32,2.0));
+                    comprimation = file_length;
+                    if(colored==true){
+                        photo = BitmapHelper.decodeByteArrayMaxSize(byteArray,32,0.9);
+                        photo_send = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                    }
+                    else{
+                        photo = BitmapHelper.toGrayscale(BitmapHelper.decodeByteArrayMaxSize(byteArray,32,0.9));
+                        photo_send = BitmapHelper.toGrayscale(BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length));
+                    }
+                    float ratio2 = BitmapHelper.decodeByteArrayMaxSizeRatio(byteArray, 32,0.9);
+                    float ratio1 = 1;
+                    ratio = ratio2/ratio1;
                 }
-                float ratio1 = BitmapHelper.decodeByteArrayMaxSizeRatio(byteArray, 32,2.0);
-                float ratio2 = BitmapHelper.decodeByteArrayMaxSizeRatio(byteArray, 32,0.9);
-                ratio = ratio2/ratio1;
             }
             else{
                 if(colored==true){
