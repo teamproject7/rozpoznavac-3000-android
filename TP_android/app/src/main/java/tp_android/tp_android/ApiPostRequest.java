@@ -24,9 +24,9 @@ public abstract class ApiPostRequest {
     private static String urlApi1 =  "http://108.61.179.124:7486/spz_img/";
     private static String urlApi2 =  "http://108.61.179.124:7486/spz/";
 
-    public static void PostApi1(final Bitmap photo, int comprimation, String user, final Activity parentActivity, Context parentContext, LinearLayout mLinearLayout) {
+    public static void PostApi1(final Bitmap photo, final Bitmap store_photo, final float ratio, String user, final Activity parentActivity, Context parentContext, LinearLayout mLinearLayout) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        BitmapHelper.toGrayscale(photo).compress(Bitmap.CompressFormat.JPEG, comprimation, baos);
+        BitmapHelper.toGrayscale(photo).compress(Bitmap.CompressFormat.JPEG, 100, baos);
         final byte[] imageBytes = baos.toByteArray();
         String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
 
@@ -42,11 +42,11 @@ public abstract class ApiPostRequest {
                     @Override
                     public void onResponse(JSONObject response) {
                         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                        photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        store_photo.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                         byte[] imageBytes = baos.toByteArray();
-                        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+                        String encodedImage2 = Base64.encodeToString(imageBytes, Base64.DEFAULT);
                         rs.stop();
-                        ResponceDecision.Responce(response.toString(), encodedImage, parentActivity);
+                        ResponceDecision.Responce(response.toString(), encodedImage2, ratio, parentActivity);
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -59,7 +59,7 @@ public abstract class ApiPostRequest {
         rs.stopButton(queue);
     }
 
-    public static void PostApi2(String ecv,final Boolean saving, final String user,final long recordID, final Activity parentActivity, Context parentContext, LinearLayout mLinearLayout, final String photoSend, final String coord) {
+    public static void PostApi2(String ecv,final Boolean saving, final String user,final long recordID, final Activity parentActivity, Context parentContext, LinearLayout mLinearLayout, final String photoSend) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("name", user);
         params.put("plate_string", ecv);
@@ -72,7 +72,7 @@ public abstract class ApiPostRequest {
                     @Override
                     public void onResponse(JSONObject response) {
                         rs.stop();
-                        ResponceDecision.ResponceSPZ(response.toString(),photoSend, parentActivity, recordID, coord, saving, user);
+                        ResponceDecision.ResponceSPZ(response.toString(),photoSend, parentActivity, recordID, saving, user);
                     }
                 },new Response.ErrorListener() {
             @Override

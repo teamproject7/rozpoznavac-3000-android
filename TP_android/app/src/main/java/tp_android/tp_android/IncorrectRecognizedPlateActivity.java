@@ -44,20 +44,21 @@ public class IncorrectRecognizedPlateActivity extends AppCompatActivity {
         Intent intent = getIntent();
         context = getApplicationContext();
         photoSend = intent.getStringExtra("photoSend");
-        coord = intent.getStringExtra("coord");
+        //coord = intent.getStringExtra("coord");
         recordID = intent.getLongExtra("recordID", -1);
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         user = prefs.getString("user","");
         saving = prefs.getBoolean("saving", true);
-        ArrayList<Integer> docasne  = intent.getIntegerArrayListExtra("docasne");
+        //ArrayList<Integer> docasne  = intent.getIntegerArrayListExtra("docasne");
 
 
 
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        Matrix matrix = new Matrix();
+        //Matrix matrix = new Matrix();
         ImageView image = (ImageView) findViewById(R.id.image1);
-        image.setImageBitmap(Bitmap.createBitmap(photo, docasne.get(0), docasne.get(1), docasne.get(2) - docasne.get(0), docasne.get(3) - docasne.get(1)));
+        //image.setImageBitmap(Bitmap.createBitmap(photo, docasne.get(0), docasne.get(1), docasne.get(2) - docasne.get(0), docasne.get(3) - docasne.get(1)));
+        image.setImageBitmap(photo);
 
         mLinearLayout = (LinearLayout) findViewById(R.id.rl_incorrect);
 
@@ -68,7 +69,8 @@ public class IncorrectRecognizedPlateActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ApiPostRequest.PostApi2(ecv.getText().toString(),saving, user, recordID, IncorrectRecognizedPlateActivity.this,context, mLinearLayout, photoSend, coord );
+               // ApiPostRequest.PostApi2(ecv.getText().toString(),saving, user, recordID, IncorrectRecognizedPlateActivity.this,context, mLinearLayout, photoSend, coord );
+                ApiPostRequest.PostApi2(ecv.getText().toString(),saving, user, recordID, IncorrectRecognizedPlateActivity.this,context, mLinearLayout, photoSend);
             }
         });
 

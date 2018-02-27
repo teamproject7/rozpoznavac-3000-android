@@ -9,6 +9,9 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,6 +25,7 @@ public class HistoryRecordsActivity extends ListActivity {
     public static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences prefs;
     private String user;
+    private Boolean saving;
 
 
     @Override
@@ -32,9 +36,17 @@ public class HistoryRecordsActivity extends ListActivity {
         db.open();
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         user = prefs.getString("user","");
+        saving = prefs.getBoolean("saving", true);
         fillData();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        db = new Database(this);
+        db.open();
+        fillData();
+    }
 
     public Date convertStrToDate(String str) throws ParseException {
         String string = str;
@@ -53,16 +65,23 @@ public class HistoryRecordsActivity extends ListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         super.onListItemClick(l, v, position, id);
-        Intent i = new Intent(this, ListItemActivity.class);
+        Intent intent = new Intent(this, ListItemActivity.class);
         Cursor c = db.fetchRecord(id);
         String json = "";
-        if (c.moveToFirst())
-            json = c.getString(c.getColumnIndex("json_response"));
+        String ecv_image = "";
 
+        if (c.moveToFirst()) {
+            json = c.getString(c.getColumnIndex("json_response"));
+            ecv_image = c.getString(c.getColumnIndex("ecv_image"));
+        }
+
+        intent.putExtra("response",json);
+        intent.putExtra("photoSend", ecv_image);
+        if(saving==true){
+            intent.putExtra("recordID", id);
+        }
         c.close();
-        i.putExtra("response",json);
-        finish();
-        startActivity(i);
+        startActivity(intent);
     }
 
     private void fillData() {

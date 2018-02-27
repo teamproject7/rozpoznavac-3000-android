@@ -70,7 +70,6 @@ public class ListItemActivity extends AppCompatActivity {
         recordID = (intent.getLongExtra("recordID",-1));
         byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
         photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-        //photo = BitmapFactory.decodeFile(imagePath);
 
 
 
@@ -114,14 +113,14 @@ public class ListItemActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        try {
+        /*try {
             coordinates = (((JSONArray) jsonResponce.getJSONArray("coordinates")));
             Log.d("coordinates", coordinates.toString());
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
-        for (int i = 0; i < coordinates.length(); i++) {
+        /*for (int i = 0; i < coordinates.length(); i++) {
             try {
                 listx.add(((JSONObject) coordinates.getJSONObject(i)).getInt("x"));
                 listy.add(((JSONObject) coordinates.getJSONObject(i)).getInt("y"));
@@ -139,13 +138,14 @@ public class ListItemActivity extends AppCompatActivity {
         Log.d("a", Integer.toString(x2));
         Log.d("a", Integer.toString(y2));
 
-
+*/
         mLinearLayout = (LinearLayout) findViewById(R.id.rl);
         buttonSpz = (Button) findViewById(R.id.buttonSpz);
         buttonPoistenie = (Button) findViewById(R.id.buttonPoistenie);
         buttonStk = (Button) findViewById(R.id.buttonStk);
         buttonVozidlo = (Button) findViewById(R.id.buttonVozidlo);
         buttonZleRozpoznanie = (Button) findViewById(R.id.buttonIncorectRecognized);
+        /*
         //byte[] decodedString = Base64.decode(imgresponse, Base64.DEFAULT);
         //Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
         Matrix matrix = new Matrix();
@@ -154,12 +154,12 @@ public class ListItemActivity extends AppCompatActivity {
         docasne.add(x1);
         docasne.add(y1);
         docasne.add(x2);
-        docasne.add(y2);
+        docasne.add(y2);*/
 
 
         ImageView image = (ImageView) findViewById(R.id.imageView);
 
-        image.setImageBitmap(bmp2);
+        image.setImageBitmap(photo);
 
         buttonSpz.setText(spz);
         buttonSpz.setBackgroundColor(Color.GREEN);
@@ -224,10 +224,10 @@ public class ListItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ListItemActivity.this, IncorrectRecognizedPlateActivity.class);
-                intent.putExtra("coord", coordinates.toString());
+                //intent.putExtra("coord", coordinates.toString());
                 intent.putExtra("photoSend", photoSend);
                 intent.putExtra("recordID", recordID);
-                intent.putIntegerArrayListExtra("docasne",docasne);
+                //intent.putIntegerArrayListExtra("docasne",docasne);
                 startActivity(intent);
                 ListItemActivity.this.finish();
             }

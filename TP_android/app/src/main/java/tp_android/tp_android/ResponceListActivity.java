@@ -1,11 +1,17 @@
 package tp_android.tp_android;
 
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.AdapterView;
 
@@ -13,8 +19,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONArray;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+
 import android.util.Log;
 
 public class ResponceListActivity extends AppCompatActivity {
@@ -25,12 +34,20 @@ public class ResponceListActivity extends AppCompatActivity {
     private JSONObject jsonResponce;
     private JSONArray dataArray;
     private String photoSend;
+    private Float ratio;
     private Database db;
     private ArrayList<Long> recordID = new ArrayList<Long>();
     private SharedPreferences prefs;
     public static final String MY_PREFS_NAME = "Setting";
     private String user;
     private Boolean saving;
+    private Integer x1;
+    private Integer x2;
+    private Integer y1;
+    private Integer y2;
+    private JSONArray coordinates = new JSONArray();
+    private Bitmap photo;
+    private ArrayList<String> spzList = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +59,9 @@ public class ResponceListActivity extends AppCompatActivity {
 
         response = intent.getStringExtra("response");
         photoSend = intent.getStringExtra("photoSend");
+        ratio = intent.getFloatExtra("ratio", 1);
+        byte[] decodedString = Base64.decode(photoSend, Base64.DEFAULT);
+        photo = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
 
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         user = prefs.getString("user","");
@@ -60,11 +80,47 @@ public class ResponceListActivity extends AppCompatActivity {
         }
 
         for(int i=0; i < dataArray.length(); i++){
+            ArrayList<Integer> listx = new ArrayList<>();
+            ArrayList<Integer> listy = new ArrayList<>();
             try {
                 JSONObject item = (JSONObject)dataArray.get(i);
                 list.add(item.getString("plate"));
+                try {
+                    coordinates = (((JSONArray) item.getJSONArray("coordinates")));
+                    Log.d("coordinates", coordinates.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                for (int j = 0; j < coordinates.length(); j++) {
+                    try {
+                        listx.add(((JSONObject) coordinates.getJSONObject(j)).getInt("x"));
+                        listy.add(((JSONObject) coordinates.getJSONObject(j)).getInt("y"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                x1 = Math.round(Collections.min(listx)*ratio);
+                x2 = Math.round(Collections.max(listx)*ratio);
+                y1 = Math.round(Collections.min(listy)*ratio);
+                y2 = Math.round(Collections.max(listy)*ratio);
+
+                Log.d("x1", (Collections.min(listx)).toString());
+                Log.d("ratio", ratio.toString());
+                Log.d("x11", (x1).toString());
+
+
+                Matrix matrix = new Matrix();
+                Bitmap bmp = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] imageBytes = baos.toByteArray();
+                String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+                spzList.add(encodedImage);
+
                 if(saving==true){
-                    Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"),item.toString(), user);
+                    Long id = db.addRecord(Calendar.getInstance().getTime(),item.getString("plate"), encodedImage, item.toString() , user);
                     Log.d("id",id.toString() );
                     recordID.add(id);
                 }
@@ -97,7 +153,7 @@ public class ResponceListActivity extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        intent.putExtra("photoSend", photoSend);
+        intent.putExtra("photoSend", spzList.get(position));
         if(saving==true){
             intent.putExtra("recordID", recordID.get(position));
         }

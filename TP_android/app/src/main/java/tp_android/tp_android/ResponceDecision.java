@@ -14,7 +14,7 @@ import java.util.Calendar;
 public abstract class ResponceDecision {
 
 
-    public static void Responce (String response, String encodedImage, Activity parentActivity) {
+    public static void Responce (String response, String encodedImage, float ratio, Activity parentActivity) {
 
         JSONObject jsonResponce = new JSONObject();
         String statusCode = "";
@@ -37,7 +37,7 @@ public abstract class ResponceDecision {
                 break;
 
             case "SUCCESS":
-                licencePlateFound(jsonResponce, parentActivity, response, encodedImage);
+                licencePlateFound(jsonResponce, parentActivity, response, encodedImage, ratio);
                 break;
 
             case "UNEXPECTED_ERROR":
@@ -54,7 +54,7 @@ public abstract class ResponceDecision {
 
     }
 
-    public static void ResponceSPZ (String response, String photoSend, Activity parentActivity, Long recordID,String coord,Boolean saving, String user) {
+    public static void ResponceSPZ (String response, String photoSend, Activity parentActivity, Long recordID, Boolean saving, String user) {
 
         JSONObject jsonResponce = new JSONObject();
         String statusCode = "";
@@ -73,7 +73,7 @@ public abstract class ResponceDecision {
 
         switch(statusCode) {
             case "SUCCESS":
-                newEcv(jsonResponce, parentActivity, response, photoSend, recordID, coord, saving, user);
+                newEcv(jsonResponce, parentActivity, response, photoSend, recordID, saving, user);
                 break;
 
             default:
@@ -82,18 +82,11 @@ public abstract class ResponceDecision {
 
     }
 
-    private static void newEcv (JSONObject jsonResponce, Activity parentActivity, String response, String photoSend, Long recordID, String coord,Boolean saving, String user) {
+    private static void newEcv (JSONObject jsonResponce, Activity parentActivity, String response, String photoSend, Long recordID, Boolean saving, String user) {
         Log.d("responce", response);
-        JSONArray pl = null;
         Database db = new Database(parentActivity);
         db.open();
         JSONObject dataArray = null;
-
-        try {
-            pl = new JSONArray(coord);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
         try {
             jsonResponce = new JSONObject(response);
@@ -103,9 +96,8 @@ public abstract class ResponceDecision {
 
         try {
             dataArray = jsonResponce.getJSONObject("data");
-            dataArray.put("coordinates",pl);
             if (saving==true){
-                Boolean id = db.updateRecord(recordID, Calendar.getInstance().getTime(),dataArray.getString("plate"),dataArray.toString(), user);
+                Boolean id = db.updateRecord(recordID, Calendar.getInstance().getTime(),dataArray.getString("plate"), photoSend, dataArray.toString(), user);
                 Log.d("update?",id.toString() );
             }
 
@@ -115,7 +107,7 @@ public abstract class ResponceDecision {
 
         Intent intent = new Intent(parentActivity, ListItemActivity.class);
         intent.putExtra("response",dataArray.toString());
-        intent.putExtra("coord", coord);
+        //intent.putExtra("coord", coord);
         intent.putExtra("photoSend", photoSend);
         intent.putExtra("recordID", recordID);
         parentActivity.startActivity(intent);
@@ -137,10 +129,11 @@ public abstract class ResponceDecision {
         parentActivity.startActivity(intent);
     }
 
-    private static void licencePlateFound (JSONObject jsonResponce, Activity parentActivity, String response, String encodedImage) {
+    private static void licencePlateFound (JSONObject jsonResponce, Activity parentActivity, String response, String encodedImage, float ratio) {
         Intent intent = new Intent(parentActivity, ResponceListActivity.class);
         intent.putExtra("response", response);
         intent.putExtra("photoSend", encodedImage);
+        intent.putExtra( "ratio", ratio);
         parentActivity.startActivity(intent);
     }
 

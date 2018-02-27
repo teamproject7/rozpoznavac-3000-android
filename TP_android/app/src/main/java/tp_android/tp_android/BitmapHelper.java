@@ -26,6 +26,10 @@ public abstract class BitmapHelper {
             int height = Math.round((float) ratio * image.getHeight());
 
         Log.d("second", Integer.toString(width*height));
+        Log.d("wr", Integer.toString(Math.round((float) ratio * image.getWidth())));
+        Log.d("w", Float.toString(ratio * image.getWidth()));
+        Log.d("hr", Integer.toString(Math.round((float) ratio * image.getHeight())));
+        Log.d("h", Float.toString(ratio * image.getHeight()));
 
         if((width>image.getWidth()) || (height>image.getHeight())){
             return Bitmap.createScaledBitmap(image, image.getWidth(),image.getHeight(),true);
@@ -49,12 +53,62 @@ public abstract class BitmapHelper {
         int height = Math.round((float) ratio * image.getHeight());
 
         Log.d("second", Integer.toString(width*height));
+        Log.d("wr", Integer.toString(Math.round((float) ratio * image.getWidth())));
+        Log.d("w", Float.toString(ratio * image.getWidth()));
+        Log.d("hr", Integer.toString(Math.round((float) ratio * image.getHeight())));
+        Log.d("h", Float.toString(ratio * image.getHeight()));
 
         if((width>image.getWidth()) || (height>image.getHeight())){
             return Bitmap.createScaledBitmap(image, image.getWidth(),image.getHeight(),true);
         }
 
         return Bitmap.createScaledBitmap(image, width,height,true);
+    }
+
+    public static float decodePathMaxSizeRatio(String path, int bitDeep, double MBsize) {
+
+        Bitmap image = BitmapFactory.decodeFile(path);
+
+        int maxImageSize = (int)(Math.sqrt((MBsize*(8.0/bitDeep)*1024.0*1024.0)));
+        Log.d("first",  Integer.toString(maxImageSize));
+        Log.d("x", Integer.toString(image.getWidth()));
+        Log.d("y",Integer.toString(image.getHeight()));
+        float ratio = Math.min(
+                (float) maxImageSize / image.getWidth(),
+                (float) maxImageSize / image.getHeight());
+        int width = Math.round((float) ratio * image.getWidth());
+        int height = Math.round((float) ratio * image.getHeight());
+
+        Log.d("ratio",Float.toString(ratio));
+
+        if((width>image.getWidth()) || (height>image.getHeight())){
+            return 1;
+        }
+
+        return ratio;
+    }
+
+    public static float decodeByteArrayMaxSizeRatio(byte[] byteArray, int bitDeep, double MBsize) {
+
+        Bitmap image = BitmapFactory.decodeByteArray(byteArray,0,byteArray.length);
+
+        int maxImageSize = (int)(Math.sqrt((MBsize*(8.0/bitDeep)*1024.0*1024.0)));
+        Log.d("first", Integer.toString(maxImageSize));
+        Log.d("x", Integer.toString(image.getWidth()));
+        Log.d("y",Integer.toString(image.getHeight()));
+        float ratio = Math.min(
+                (float) maxImageSize / image.getWidth(),
+                (float) maxImageSize / image.getHeight());
+        int width = Math.round((float) ratio * image.getWidth());
+        int height = Math.round((float) ratio * image.getHeight());
+
+        Log.d("ratio",Float.toString(ratio));
+
+        if((width>image.getWidth()) || (height>image.getHeight())){
+            return 1;
+        }
+
+        return ratio;
     }
 
     public static Bitmap decodeBitmapFromFile(String imagePath,

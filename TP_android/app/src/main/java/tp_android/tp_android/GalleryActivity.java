@@ -71,7 +71,7 @@ public class GalleryActivity extends Activity implements OnItemClickListener {
             }
             // Add the images
             else{
-                Bitmap image = BitmapHelper.decodeBitmapFromFile(file.getAbsolutePath(),50,50);
+                Bitmap image = BitmapHelper.decodeBitmapFromFile(file.getAbsolutePath(),20,20);
                 items.add(new GridViewItem(file.getAbsolutePath(), false, image));
             }
         }
