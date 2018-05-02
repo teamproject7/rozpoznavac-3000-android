@@ -5,14 +5,16 @@ import android.graphics.Bitmap;
 public class GridViewItem {
 
     private String path;
+    private String prefix;
     private boolean isDirectory;
     private Bitmap image;
 
 
-    public GridViewItem(String path, boolean isDirectory, Bitmap image) {
+    public GridViewItem(String path, boolean isDirectory, Bitmap image, String prefix) {
         this.path = path;
         this.isDirectory = isDirectory;
         this.image = image;
+        this.prefix = prefix;
     }
 
 
@@ -28,5 +30,9 @@ public class GridViewItem {
 
     public Bitmap getImage() {
         return image;
+    }
+
+    public String getPrefix() {
+        return prefix;
     }
 }

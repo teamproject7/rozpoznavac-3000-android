@@ -2,6 +2,7 @@ package tp_android.tp_android;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -12,7 +13,6 @@ import java.util.Calendar;
 
 
 public abstract class ResponceDecision {
-
 
     public static void Responce (String response, String encodedImage, float ratio, Activity parentActivity) {
 
@@ -87,6 +87,17 @@ public abstract class ResponceDecision {
         Database db = new Database(parentActivity);
         db.open();
         JSONObject dataArray = null;
+        String db_ecv_default = "";
+        String db_user = "";
+        String db_time_default = "";
+
+        Cursor c = db.fetchRecord(recordID);
+        if (c.moveToFirst()) {
+            db_ecv_default = c.getString(c.getColumnIndex("ecv_default"));
+            db_user = c.getString(c.getColumnIndex("user"));
+            db_time_default = c.getString(c.getColumnIndex("date_time_dafault"));
+        }
+
 
         try {
             jsonResponce = new JSONObject(response);
@@ -97,7 +108,7 @@ public abstract class ResponceDecision {
         try {
             dataArray = jsonResponce.getJSONObject("data");
             if (saving==true){
-                Boolean id = db.updateRecord(recordID, Calendar.getInstance().getTime(),dataArray.getString("plate"), photoSend, dataArray.toString(), user);
+                Boolean id = db.updateRecord(recordID, Calendar.getInstance().getTime(),db_time_default, dataArray.getString("plate"),db_ecv_default, photoSend, dataArray.toString(), db_user);
                 Log.d("update?",id.toString() );
             }
 

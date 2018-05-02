@@ -49,7 +49,10 @@ public class MyGridAdapter extends BaseAdapter {
         }
 
         TextView text = (TextView) convertView.findViewById(R.id.textView);
-        text.setText(items.get(position).getPath());
+        String sufix = items.get(position).getPath();
+        String[] arrayString = sufix.split("/");
+        sufix = arrayString[arrayString.length-1];
+        text.setText(items.get(position).getPrefix()+sufix);
 
         ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView);
         Bitmap image = items.get(position).getImage();
@@ -59,7 +62,7 @@ public class MyGridAdapter extends BaseAdapter {
         }
         else {
             // If no image is provided, display a folder icon.
-            imageView.setImageResource(R.drawable.dir);
+            imageView.setImageResource(R.drawable.ic_dir);
         }
 
         return convertView;

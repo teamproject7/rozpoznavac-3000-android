@@ -5,7 +5,6 @@ android:layout_height="wrap_content"
 android:orientation="horizontal"
 android:padding="5dip" >
 
-<!-- Title Of Song-->
 <TextView
     android:id="@+id/ecv"
     android:layout_width="wrap_content"
@@ -15,17 +14,15 @@ android:padding="5dip" >
     android:textSize="15dip"
     android:textStyle="bold"/>
 
-<!-- Artist Name -->
-<TextView
-    android:id="@+id/user"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:layout_below="@id/ecv"
-    android:textColor="#343434"
-    android:textSize="10dip"
-    android:layout_marginTop="1dip" />
+    <TextView
+        android:id="@+id/user"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/ecv"
+        android:layout_marginTop="1dip"
+        android:textColor="#343434"
+        android:textSize="10dip" />
 
-<!-- Rightend Duration -->
 <TextView
     android:id="@+id/time"
     android:layout_width="wrap_content"

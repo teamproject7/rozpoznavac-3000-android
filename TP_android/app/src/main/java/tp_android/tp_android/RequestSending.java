@@ -2,7 +2,9 @@ package tp_android.tp_android;
 
 import android.animation.ObjectAnimator;
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Build;
+import android.support.design.widget.CoordinatorLayout;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +20,16 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 
 
-public class RequestSending  {
+public class RequestSending{
 
     private Context context;
     private ObjectAnimator anim;
     private PopupWindow popupWindow;
     private View customView;
+    public static final String MY_PREFS_NAME = "Setting";
 
 
-    public RequestSending(Context context, Activity activity, LinearLayout mLinearLayout) {
+    public RequestSending(Context context, Activity activity, CoordinatorLayout mLinearLayout) {
         this.context = context;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(activity.LAYOUT_INFLATER_SERVICE);
@@ -45,11 +48,9 @@ public class RequestSending  {
         anim.setDuration(2000);
         anim.setInterpolator(new DecelerateInterpolator());
         anim.start();
-
-
     }
 
-    public void stopButton(final RequestQueue queue) {
+    public void stopButton(final RequestQueue queue, final Activity parentActivity, final Context parentContext) {
         Button stopSendButton = (Button) customView.findViewById(R.id.stop_send);
         stopSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +58,9 @@ public class RequestSending  {
                 queue.cancelAll(new RequestQueue.RequestFilter() {
                     @Override
                     public boolean apply(Request<?> request) {
+                        SharedPreferences.Editor editor = parentActivity.getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
+                        editor.putBoolean("posielanie",false);
+                        editor.apply();
                         stop();
                         return true;
                     }
@@ -70,5 +74,7 @@ public class RequestSending  {
         anim.pause();
         popupWindow.dismiss();
     }
+
+
 
 }

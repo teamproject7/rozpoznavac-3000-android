@@ -12,34 +12,48 @@ import android.content.SharedPreferences;
 import android.widget.Switch;
 import android.widget.CompoundButton;
 import android.util.Log;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.widget.Toast;
+
 
 public class ApplicationSettingActivity extends AppCompatActivity {
     private Database db;
     private TextView tvProgressLabel;
+    private TextView userLabel;
     private Button deleteUserData;
     public static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences.Editor editor;
+    private boolean colored;
+    private boolean saving;
+    private boolean help;
+    private String user;
+    private Float comprimation;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_setting);
-        Switch switchButton, switchButton2;
+        Switch switchButton, switchButton2, switchButton3;
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
-        Float comprimation = prefs.getFloat("comprimation", 2);
-        boolean colored = prefs.getBoolean("colored",true);
-        boolean saving = prefs.getBoolean("saving", true);
-        final String user = prefs.getString("user", "");
+        comprimation = prefs.getFloat("comprimation", 2);
+        colored = prefs.getBoolean("colored",true);
+        saving = prefs.getBoolean("saving", true);
+        help = prefs.getBoolean("help", true);
+        user = prefs.getString("user", "");
         editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+
+        userLabel = findViewById(R.id.user);
+        userLabel.setText(user);
 
         SeekBar seekBar = findViewById(R.id.comprimation);
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
         tvProgressLabel = findViewById(R.id.textView);
-        tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MBi):  " + comprimation + " MBi");
-        seekBar.setProgress(Math.round(comprimation));
+        tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MB):  " + ((int)(Math.round(comprimation)) + " MB"));
+        seekBar.setProgress(Math.round(comprimation-1));
         deleteUserData = (Button) findViewById(R.id.buttonDelete);
 
 
@@ -49,12 +63,14 @@ public class ApplicationSettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
                 if (bChecked) {
-                    editor.putBoolean("colored", true);
+                    colored=true;
 
                 } else {
-                    editor.putBoolean("colored", false);
+                    colored=false;
                 }
+                editor.putBoolean("colored", colored);
                 editor.apply();
+                setDB();
             }
         });
 
@@ -64,46 +80,119 @@ public class ApplicationSettingActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
                 if (bChecked) {
-                    editor.putBoolean("saving", true);
+                    saving=true;
 
                 } else {
-                    editor.putBoolean("saving", false);
+                    saving=false;
                 }
+                editor.putBoolean("saving",saving);
                 editor.apply();
+                setDB();
+            }
+        });
+
+        switchButton3 = (Switch) findViewById(R.id.help);
+        switchButton3.setChecked(help);
+        switchButton3.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean bChecked) {
+                if (bChecked) {
+                    help=true;
+
+                } else {
+                    help=false;
+                }
+                editor.putBoolean("help", help);
+                editor.apply();
+                setDB();
             }
         });
 
         deleteUserData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db = new Database(ApplicationSettingActivity.this);
-                db.open();
-                db.deletadeAllRecord(user);
+                confirmDialog();
+
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
     }
 
     SeekBar.OnSeekBarChangeListener seekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            // updated continuously as the user slides the thumb
-            tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MBi):  " + progress + " MBi");
+            tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MB):  " + (progress+1) + " MB");
         }
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
-            // called when the user first touches the SeekBar
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            editor.putFloat("comprimation", seekBar.getProgress());
+            editor.putFloat("comprimation", seekBar.getProgress()+1);
+            comprimation=(float)seekBar.getProgress()+1;
             editor.apply();
-            // called after the user finishes moving the SeekBar
+            setDB();
         }
     };
+
+    private void confirmDialog() {
+        db = new Database(ApplicationSettingActivity.this);
+        db.open();
+        int pocet = 0;
+        Cursor c = db.fetchAllRecordsForUser(user);
+        pocet = c.getCount();
+        final int finalPocet = pocet;
+
+        if (finalPocet > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("");
+            builder.setMessage("Prajete si zmazať všetky záznamy užívateľa '" + user + "' ?");
+            builder.setCancelable(false);
+
+            builder.setPositiveButton("Áno", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (finalPocet == 1) {
+                        Toast.makeText(getApplicationContext(), "Záznam zmazaný...", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Všetky záznamy zmazané...", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            });
+
+            builder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    //Toast.makeText(getApplicationContext(), "You've changed your mind to delete all records", Toast.LENGTH_SHORT).show();
+                }
+            });
+            builder.show();
+        } else {
+            Toast.makeText(getApplicationContext(), ("Ždiadne záznamy..."), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void setDB(){
+        SettingDatabase db_setting;
+        db_setting = new SettingDatabase(this);
+        db_setting.open();
+        Cursor c = db_setting.fetchAllRecords();
+        int db_id;
+
+        if (c.moveToFirst()) {
+            db_id = c.getInt(c.getColumnIndex("_id"));
+            db_setting.updateRecord(db_id,user,colored,saving,help, comprimation);
+        }
+    }
 
 
 }
