@@ -7,67 +7,63 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.graphics.Matrix;
-import android.widget.LinearLayout;
 import android.provider.MediaStore;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-
-import java.io.File;
 import android.os.Environment;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import android.os.StrictMode;
-import android.Manifest;
-import android.content.pm.PackageManager;
-
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.design.widget.CoordinatorLayout;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.io.File;
 
-public class CapturephotoActivity extends Activity {
+
+public class CapturePhotoActivity extends Activity {
+
     private Context context;
-
     private CoordinatorLayout mLinearLayout;
     private Button sendButton;
     private ImageView imageView;
+    private FloatingActionButton fb;
 
     private Bitmap photo;
     private Bitmap photo_send;
     private String path;
     private File file;
     private float ratio = 1;
-    private String app_dir = "spz_app";
     private float file_length;
+    private float new_file_lenght;
 
     private boolean imageInit = false;
-
-    //private static final int CAMERA_REQUEST = 1888;
+    private static final String app_dir = "spz_egov";
     private int CAMERA_REQUEST;
+    final int MyVersion = Build.VERSION.SDK_INT;
+    private static final String MY_PREFS_NAME = "Setting";
+
     private SharedPreferences prefs;
-    public static final String MY_PREFS_NAME = "Setting";
     private float comprimation;
     private boolean colored;
     private boolean help;
     private String user;
-    final int MyVersion = Build.VERSION.SDK_INT;
+
     private Intent cameraIntent;
-    private FloatingActionButton fb;
+    private Toast toast;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_capturephoto);
-                mLinearLayout =  (CoordinatorLayout) findViewById(R.id.rl_captured_photo);
+                setContentView(R.layout.activity_capture_photo);
+                mLinearLayout =  (CoordinatorLayout) findViewById(R.id.capture_photo);
                 context = getApplicationContext();
 
                 prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
@@ -75,9 +71,7 @@ public class CapturephotoActivity extends Activity {
                 colored = prefs.getBoolean("colored", true);
                 help = prefs.getBoolean("help", true);
                 user = prefs.getString("user", "");
-                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putBoolean("posielanie",false);
-                editor.apply();
+                sendingEventRequesting(false);
 
                 imageView = (ImageView) this.findViewById(R.id.imageView1);
                 sendButton = (Button) findViewById(R.id.button2);
@@ -97,10 +91,11 @@ public class CapturephotoActivity extends Activity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putBoolean("posielanie",true);
-                editor.apply();
-                ApiPostRequest.PostApi1(photo_send, photo, ratio, user, CapturephotoActivity.this, context, mLinearLayout);
+                sendingEventRequesting(true);
+                if (toast != null) {
+                    toast.cancel();
+                }
+                ApiPostRequest.PostApi1(photo_send, photo, ratio, user, CapturePhotoActivity.this, context, mLinearLayout);
 
             }
         });
@@ -108,7 +103,7 @@ public class CapturephotoActivity extends Activity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(imageInit==true) {
+                if(imageInit) {
                     Matrix matrix = new Matrix();
                     matrix.postRotate(90);
                     photo = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true);
@@ -123,11 +118,18 @@ public class CapturephotoActivity extends Activity {
     public void onBackPressed() {
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         boolean posielanie = prefs.getBoolean("posielanie", true);
-        if(posielanie==false){
+        if(!posielanie){
+            if (toast != null) {
+                toast.cancel();
+            }
             this.finish();
         }
         else {
-            Toast.makeText(getApplicationContext(), ("Najprv zastavte posielanie..."), Toast.LENGTH_SHORT).show();
+            if (toast != null) {
+                toast.cancel();
+            }
+            toast = Toast.makeText(getApplicationContext(), ("Najprv zastavte posielanie..."), Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 
@@ -144,6 +146,7 @@ public class CapturephotoActivity extends Activity {
                 readOrCreateDir();
             }
         }
+
         if (MyVersion < Build.VERSION_CODES.M) {
             readOrCreateDir();
         }
@@ -171,10 +174,9 @@ public class CapturephotoActivity extends Activity {
                 readImage();
             }
 
-
-            if (file_length >= 0.9) {
+            if (file_length >= 0.9f) {
                 if (file_length > comprimation) {
-                    if (colored == true) {
+                    if (colored) {
                         photo = BitmapHelper.decodePathMaxSize(path, 32, 0.9);
                         photo_send = BitmapHelper.decodePathMaxSize(path, 32, comprimation);
                     } else {
@@ -184,55 +186,71 @@ public class CapturephotoActivity extends Activity {
                     float ratio2 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 0.9);
                     float ratio1 = BitmapHelper.decodePathMaxSizeRatio(path, 32, comprimation);
                     ratio = ratio2 / ratio1;
+                    new_file_lenght=comprimation;
                 } else {
-                    if (colored == true) {
+                    if (colored) {
                         photo = BitmapHelper.decodePathMaxSize(path, 32, 0.9);
-                        photo_send = BitmapFactory.decodeFile(path);
+                        photo_send = BitmapHelper.decodePathMaxSize(path,32,file_length);
                     } else {
                         photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path, 32, 0.9));
-                        photo_send = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
+                        photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,file_length));
                     }
                     float ratio2 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 0.9);
-                    float ratio1 = 1;
+                    float ratio1 = BitmapHelper.decodePathMaxSizeRatio(path, 32, file_length);
                     ratio = ratio2 / ratio1;
+                    new_file_lenght=file_length;
                 }
 
             } else {
-                if (colored == true) {
-                    photo = BitmapFactory.decodeFile(path);
-                    photo_send = BitmapFactory.decodeFile(path);
+                if (colored) {
+                    photo = (BitmapHelper.decodePathMaxSize(path, 32, 0.9));
+                    photo_send = (BitmapHelper.decodePathMaxSize(path, 32, 0.9));
                 } else {
-                    photo = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
-                    photo_send = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
+                    photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path, 32, 0.9));
+                    photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path, 32, 0.9));
                 }
+                new_file_lenght = file_length;
             }
 
             imageView.setImageBitmap(photo);
             imageInit = true;
 
+           imageView.setOnLongClickListener(new View.OnLongClickListener() {
+
+               @Override
+               public boolean onLongClick(View v) {
+                   imageInfo();
+                   return true;
+               }
+           });
+
+           imageInfo();
             fb = findViewById(R.id.info);
-            if(help==true) {
+            fb.show();
+            prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+            boolean posielanie = prefs.getBoolean("posielanie", true);
+            if(help && !posielanie) {
                 fb.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        alertDialog();
+                        alertDialogHelp();
                     }
                 });
             }
             else {
                 fb.hide();
            }
-
         }
         else{
            this.finish();
+
        }
     }
 
     private void readImage(){
         Bitmap myBitmap = BitmapFactory.decodeFile(file.getPath());
         imageView.setImageBitmap(myBitmap);
-        file_length = file.length()/(1024*1024);
+        file_length = (float) file.length()/(1024*1024);
     }
 
     private void readOrCreateDir(){
@@ -242,10 +260,26 @@ public class CapturephotoActivity extends Activity {
         }
     }
 
-    private void alertDialog() {
+    private void sendingEventRequesting(boolean value) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putBoolean("posielanie",value);
+        editor.apply();
+    }
+
+
+    private void imageInfo(){
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(getApplicationContext(), ("Povodná/odosielaná veľkosť obrázku: "+Math.round((double)(file_length*100.0f))/100.0f+" Mb/ "+Math.round((double)(new_file_lenght*100.0f))/100.0f+" Mb"), Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
+
+    private void alertDialogHelp() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Info");
-        builder.setMessage("Obrázok sa po kliknutí obráti o 90° ");
+        builder.setMessage("Obrázok sa po kliknutí otočí o 90° a po dlhom kliknutí sa zobrazí správa o jeho pôvodnej a odosielanej veľkosti");
         builder.setCancelable(true);
         builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
             @Override
@@ -254,8 +288,6 @@ public class CapturephotoActivity extends Activity {
         });
         builder.show();
     }
-
-
 
 }
 

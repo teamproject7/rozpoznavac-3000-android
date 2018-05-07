@@ -1,98 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rl_incorrect"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/incorrect_recognized_plate"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#dbdfdf"
+    android:textColor="@android:color/black"
+    android:textSize="14sp"
     tools:context="tp_android.tp_android.IncorrectRecognizedPlateActivity">
 
     <LinearLayout
+        android:id="@+id/linearLayout0"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="10dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:paddingTop="10dp"
+        android:paddingTop="90dp"
         android:scaleType="fitCenter">
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/image1"
+        <LinearLayout
+            android:id="@+id/linearLayout1"
             android:layout_width="match_parent"
-            android:layout_height="223dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="10dp"
-            android:scaleType="fitCenter" />
-    </LinearLayout>
+            android:layout_height="166dp"
+            android:orientation="horizontal"
+            android:paddingBottom="15dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
+
+            <ImageView
+                android:id="@+id/image1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:scaleType="fitCenter" />
+        </LinearLayout>
 
 
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Zadajte správnu spz"
-            android:textSize="20sp" />
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="282dp"
+                android:layout_height="43dp"
+                android:layout_weight="1"
+                android:text="Zadajte správny tvar ŠPZ"
+                android:textAlignment="center"
+                android:textSize="20sp" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp">
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/ecv"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="20sp" />
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp">
 
-    </LinearLayout>
+            <EditText
+                android:id="@+id/ecv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:visibility="visible" />
 
-    <LinearLayout
-        android:id="@+id/linearLayout4"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:orientation="horizontal"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp">
+        </LinearLayout>
 
-        <Button
-            android:id="@+id/send"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Send"
-            android:textSize="20sp" />
+        <LinearLayout
+            android:id="@+id/linearLayout4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="20dp">
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Overiť ŠPZ"
+                android:visibility="visible" />
+
+        </LinearLayout>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -102,7 +105,7 @@
         android:layout_gravity="top|right"
         android:layout_margin="16dp"
         app:backgroundTint="@color/colorPrimary"
-        app:layout_anchor="@+id/image1"
+        app:layout_anchor="@+id/linearLayout0"
         app:layout_anchorGravity="top|right|end"
         app:rippleColor="@android:color/transparent"
         app:srcCompat="@android:drawable/ic_dialog_info" />

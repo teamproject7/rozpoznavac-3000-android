@@ -2,37 +2,39 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="tp_android.tp_android">
 
-    <permission
-        android:name="com.example.gcm.permission.C2D_MESSAGE"
+    <permission android:name="com.example.gcm.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
+    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="com.android.launcher.permission.UNINSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL_STORAGE" />
+
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="com.example.gcm.permission.C2D_MESSAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <uses-feature android:name="android.hardware.camera"></uses-feature>
+
+    <uses-feature android:name="android.hardware.camera" />
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,29 +42,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CapturephotoActivity"
-            android:screenOrientation="portrait" />
+            android:name=".CapturePhotoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
         <activity
             android:name=".HistoryRecordsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
         <activity
             android:name=".ListItemActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
         <activity
             android:name=".ResponceListActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
         <activity
             android:name=".GalleryActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
         <activity
             android:name=".GalleryItemViewActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".ResponceErrorActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".ApplicationSettingActivity" />
-        <activity android:name=".IncorrectRecognizedPlateActivity"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
 
+        <activity
+            android:name=".ApplicationSettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
+
+        <activity
+            android:name=".IncorrectRecognizedPlateActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
+            android:label="@string/app_name"/>
     </application>
 
 </manifest>

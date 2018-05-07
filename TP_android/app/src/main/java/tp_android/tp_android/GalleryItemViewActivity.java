@@ -11,14 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Button;
 import android.content.SharedPreferences;
-import java.io.File;
-import android.graphics.BitmapFactory;
 import android.support.design.widget.CoordinatorLayout;
 import android.widget.Toast;
 
+import java.io.File;
 
 public class GalleryItemViewActivity extends AppCompatActivity {
 
@@ -32,18 +30,21 @@ public class GalleryItemViewActivity extends AppCompatActivity {
     private Bitmap photo_send;
     private String path;
     private float ratio = 1;
+    private float new_file_length;
     private float file_length;
 
-    public static final String MY_PREFS_NAME = "Setting";
+
+    private static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences prefs;
     private float comprimation;
     private boolean colored;
     private boolean help;
     private String user;
+    private Toast toast;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_item_view);
         Intent intent = getIntent();
@@ -55,21 +56,19 @@ public class GalleryItemViewActivity extends AppCompatActivity {
         colored = prefs.getBoolean("colored",true);
         help = prefs.getBoolean("help",true);
         user = prefs.getString("user","");
-        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-        editor.putBoolean("posielanie",false);
-        editor.apply();
+        sendingEventRequesting(false);
 
         fb = (FloatingActionButton)  findViewById(R.id.info);
-        mLinearLayout = (CoordinatorLayout) findViewById(R.id.rl_galelry_item_view);
-        imageView = (ImageView) findViewById(R.id.image1);
+        mLinearLayout = (CoordinatorLayout) findViewById(R.id.gallery_item_view);
+        imageView = (ImageView) findViewById(R.id.imageView1);
         sendButton = (Button) findViewById(R.id.send);
 
         File file = new File(path);
-        file_length = file.length()/(1024/1024);
+        file_length = (float) file.length()/(1024*1024);
 
         if(file_length>=0.9){
             if(file_length>comprimation){
-                if(colored==true){
+                if(colored){
                     photo = BitmapHelper.decodePathMaxSize(path,32,0.9);
                     photo_send = BitmapHelper.decodePathMaxSize(path,32,comprimation);
                 }
@@ -80,34 +79,36 @@ public class GalleryItemViewActivity extends AppCompatActivity {
                 float ratio2 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 0.9);
                 float ratio1 = BitmapHelper.decodePathMaxSizeRatio(path, 32, comprimation);
                 ratio = ratio2/ratio1;
+                new_file_length=comprimation;
             }
             else{
-                if(colored==true){
+                if(colored){
                     photo = BitmapHelper.decodePathMaxSize(path,32,0.9);
-                    photo_send = BitmapFactory.decodeFile(path);
+                    photo_send = BitmapHelper.decodePathMaxSize(path,32,file_length);
                 }
                 else{
                     photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,0.9));
-                    photo_send = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
+                    photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path,32,file_length));
                 }
                 float ratio2 = BitmapHelper.decodePathMaxSizeRatio(path, 32, 0.9);
-                float ratio1 = 1;
+                float ratio1 = BitmapHelper.decodePathMaxSizeRatio(path, 32, file_length);
                 ratio = ratio2/ratio1;
+                new_file_length=file_length;
             }
-
         }
         else {
-            if (colored == true) {
-                photo = BitmapFactory.decodeFile(path);
-                photo_send = BitmapFactory.decodeFile(path);
+            if (colored) {
+                photo = (BitmapHelper.decodePathMaxSize(path, 32, 0.9));
+                photo_send = (BitmapHelper.decodePathMaxSize(path, 32, 0.9));
+            } else {
+                photo = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path, 32, 0.9));
+                photo_send = BitmapHelper.toGrayscale(BitmapHelper.decodePathMaxSize(path, 32, 0.9));
             }
-            else {
-                photo = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
-                photo_send = BitmapHelper.toGrayscale(BitmapFactory.decodeFile(path));
-            }
+            new_file_length = file_length;
         }
 
-        imageView.setImageBitmap(photo);
+        imageView.setImageBitmap(photo_send);
+
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,21 +117,35 @@ public class GalleryItemViewActivity extends AppCompatActivity {
                 matrix.postRotate(90);
                 photo = Bitmap.createBitmap(photo, 0, 0, photo.getWidth(), photo.getHeight(), matrix, true);
                 photo_send = Bitmap.createBitmap(photo_send, 0, 0, photo_send.getWidth(), photo_send.getHeight(), matrix, true);
-                imageView.setImageBitmap(photo);
+                imageView.setImageBitmap(photo_send);
             }
         });
 
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
-                editor.putBoolean("posielanie",true);
-                editor.apply();
+                sendingEventRequesting(true);
+                if (toast != null) {
+                    toast.cancel();
+                }
                 ApiPostRequest.PostApi1(photo_send, photo, ratio, user, GalleryItemViewActivity.this, context, mLinearLayout);
             }
         });
+
+        imageView.setOnLongClickListener(new View.OnLongClickListener() {
+
+            @Override
+            public boolean onLongClick(View v) {
+                imageInfo();
+                return true;
+            }
+        });
+
         fb = findViewById(R.id.info);
-        if(help==true) {
+        prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        fb.show();
+        boolean posielanie = prefs.getBoolean("posielanie", true);
+        if(help && !posielanie) {
             fb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -141,26 +156,38 @@ public class GalleryItemViewActivity extends AppCompatActivity {
         else {
             fb.hide();
         }
-
+        imageInfo();
     }
 
     @Override
     public void onBackPressed() {
         prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         boolean posielanie = prefs.getBoolean("posielanie", true);
-        if(posielanie==false){
+        if(!posielanie){
+            if (toast != null) {
+                toast.cancel();
+            }
             this.finish();
         }
         else {
-            Toast.makeText(getApplicationContext(), ("Najprv zastavte posielanie..."), Toast.LENGTH_SHORT).show();
+            if (toast != null) {
+                toast.cancel();
+            }
+            toast = Toast.makeText(getApplicationContext(), ("Najprv zastavte posielanie..."), Toast.LENGTH_SHORT);
+            toast.show();
         }
     }
 
+    private void sendingEventRequesting(boolean value) {
+        SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME, Context.MODE_PRIVATE).edit();
+        editor.putBoolean("posielanie",value);
+        editor.apply();
+    }
 
     private void alertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Info");
-        builder.setMessage("Obrázok sa po kliknutí obráti o 90° ");
+        builder.setMessage("Obrázok sa po kliknutí otočí o 90° a po dlhom kliknutí sa zobrazí správa o jeho pôvodnej a odosielanej veľkosti");
         builder.setCancelable(true);
         builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
             @Override
@@ -168,6 +195,14 @@ public class GalleryItemViewActivity extends AppCompatActivity {
             }
         });
         builder.show();
+    }
+
+    public void imageInfo(){
+        if (toast != null) {
+            toast.cancel();
+        }
+        toast = Toast.makeText(getApplicationContext(), ("Povodná/odosielaná veľkosť obrázku: "+Math.round((double)(file_length*100.0f))/100.0f+" Mb/ "+Math.round((double)(new_file_length*100.0f))/100.0f+" Mb"), Toast.LENGTH_SHORT);
+        toast.show();
     }
 
 }

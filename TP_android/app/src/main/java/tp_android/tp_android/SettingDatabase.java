@@ -9,8 +9,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 
-
-
 public class SettingDatabase {
 
     public static final String KEY_ID = "_id";
@@ -32,7 +30,7 @@ public class SettingDatabase {
 
     private static final String DATABASE_NAME = "tp7_ecv_setting";
     private static final String DATABASE_TABLE = "setting_records";
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 12;
 
     private final Context mCtx;
 

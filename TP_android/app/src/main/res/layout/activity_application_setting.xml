@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_galelry_item_view"
+    android:id="@+id/activity_application_setting"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#dbdfdf"
+    android:gravity="fill_vertical|fill_horizontal"
     android:orientation="vertical"
-    android:paddingBottom="10dp"
-    android:paddingLeft="25dp"
-    android:paddingRight="25dp"
+    android:paddingLeft="35dp"
+    android:paddingRight="35dp"
     android:paddingTop="35dp"
     android:scaleType="fitCenter"
     tools:context="tp_android.tp_android.ApplicationSettingActivity">
@@ -18,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:visibility="visible">
 
         <TextView
@@ -28,7 +29,8 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <LinearLayout
@@ -36,8 +38,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:visibility="visible">
 
         <Switch
@@ -45,6 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
+            android:splitTrack="true"
             android:text="Farebné obrázky"
             android:textColor="@android:color/black"
             android:textSize="14sp"
@@ -56,8 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:visibility="visible">
 
         <Switch
@@ -75,8 +78,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:visibility="visible">
 
         <Switch
@@ -94,8 +97,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:paddingTop="20dp"
         android:visibility="visible">
 
         <TextView
@@ -122,23 +125,26 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fadeScrollbars="false"
-            android:max="4"/>
+            android:max="16" />
 
     </LinearLayout>
 
 
     <LinearLayout
         android:id="@+id/linearLayout6"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:orientation="horizontal"
-        android:paddingTop="20dp"
         android:paddingBottom="20dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingTop="20dp"
         android:visibility="visible">
 
         <Button
             android:id="@+id/buttonDelete"
-            android:layout_width="match_parent"
+            android:layout_width="267dp"
             android:layout_height="wrap_content"
             android:text="Vymazať históriu"
             android:textColor="@android:color/black"

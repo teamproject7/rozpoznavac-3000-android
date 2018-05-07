@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/rl"
+
     android:background="#dbdfdf"
     android:orientation="vertical"
-    tools:context="tp_android.tp_android.ListItemActivity">
+    >
 
     <LinearLayout
         android:layout_width="match_parent"

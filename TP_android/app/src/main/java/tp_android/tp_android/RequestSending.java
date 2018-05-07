@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.content.Context;
@@ -26,7 +25,7 @@ public class RequestSending{
     private ObjectAnimator anim;
     private PopupWindow popupWindow;
     private View customView;
-    public static final String MY_PREFS_NAME = "Setting";
+    private static final String MY_PREFS_NAME = "Setting";
 
 
     public RequestSending(Context context, Activity activity, CoordinatorLayout mLinearLayout) {
@@ -68,7 +67,6 @@ public class RequestSending{
             }
         });
     }
-
 
     public void stop() {
         anim.pause();

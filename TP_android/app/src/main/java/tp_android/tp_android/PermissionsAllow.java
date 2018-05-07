@@ -1,6 +1,5 @@
 package tp_android.tp_android;
 
-import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;

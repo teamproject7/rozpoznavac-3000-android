@@ -4,20 +4,16 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.content.SharedPreferences;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String MY_PREFS_NAME = "Setting";
-
+    private static final String MY_PREFS_NAME = "Setting";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setDisplayUseLogoEnabled(true);
         setContentView(R.layout.activity_main);
         loadSetting();
     }
@@ -35,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         String db_user;
 
         if (c.getCount() < 1){
-            db_setting.addRecord("Admin", Boolean.TRUE, Boolean.TRUE,Boolean.TRUE, 2f);
+            db_setting.addRecord("Admin", Boolean.TRUE, Boolean.TRUE,Boolean.TRUE, 1.5f);
             loadSetting();
         }
         else if (c.moveToFirst()) {
@@ -55,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void CaptureImage(View view) {
-            Intent intent = new Intent(this, CapturephotoActivity.class);
+            Intent intent = new Intent(this, CapturePhotoActivity.class);
             startActivity(intent);
     }
 

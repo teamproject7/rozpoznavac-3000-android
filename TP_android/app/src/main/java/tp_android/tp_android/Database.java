@@ -21,7 +21,6 @@ public class Database {
     public static final String KEY_JSON = "json_response";
     public static final String KEY_USER = "user";
 
-
     private static final String TAG = "Database";
 
     private DatabaseHelper dbHelper;
@@ -91,13 +90,10 @@ public class Database {
 
 
     public void deleteRecord(long rowId) {
-
-        //return db.delete(DATABASE_TABLE, KEY_ID + "=" + rowId, null) > 0;
         db.execSQL("DELETE FROM "+DATABASE_TABLE+" WHERE "+KEY_ID+"='"+rowId+"'");
     }
 
     public void deletadeAllUserRecord(String user) {
-        //return db.delete(DATABASE_TABLE, KEY_USER + "=" + user, null) > 0;
         db.execSQL("DELETE FROM "+DATABASE_TABLE+" WHERE "+KEY_USER+"='"+user+"'");
     }
 
@@ -114,23 +110,18 @@ public class Database {
     public Cursor fetchAllRecordsForUser(String user) {
 
         return db.query(DATABASE_TABLE, new String[]{KEY_ID, KEY_TIME,
-                KEY_ECV,KEY_ECVIMAGE, KEY_JSON, KEY_USER,KEY_TIMEDEFAULT,KEY_ECVDEFAULT}, KEY_USER + "='" + user+"'", null, null, null, null);
+                KEY_ECV,KEY_ECVIMAGE, KEY_JSON, KEY_USER, KEY_TIMEDEFAULT, KEY_ECVDEFAULT}, KEY_USER + "='" + user+"'", null, null, null, KEY_TIME+" ASC",null);
     }
 
     public Cursor fetchRecord(long rowId) throws SQLException {
-
-        Cursor mCursor =
-
-                db.query(true, DATABASE_TABLE, new String[]{KEY_ID,
-                                KEY_TIME, KEY_ECV, KEY_ECVIMAGE, KEY_JSON, KEY_USER,KEY_TIMEDEFAULT,KEY_ECVDEFAULT}, KEY_ID + "=" + rowId, null,
+        Cursor mCursor =db.query(true, DATABASE_TABLE, new String[]{KEY_ID,
+                                KEY_TIME, KEY_ECV, KEY_ECVIMAGE, KEY_JSON, KEY_USER, KEY_TIMEDEFAULT, KEY_ECVDEFAULT}, KEY_ID + "='" + rowId + "'", null,
                         null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
         return mCursor;
-
     }
-
 
     public boolean updateRecord(long rowId, Date dateTime,String dateTime_default, String ecv, String ecv_default, String ecv_image, String json, String user) {
         ContentValues args = new ContentValues();

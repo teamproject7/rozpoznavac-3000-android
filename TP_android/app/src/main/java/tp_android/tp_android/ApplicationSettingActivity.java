@@ -5,7 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.content.SharedPreferences;
@@ -16,13 +15,14 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.widget.Toast;
 
-
 public class ApplicationSettingActivity extends AppCompatActivity {
+    private Switch switchButton, switchButton2, switchButton3;
+    private SeekBar seekBar;
     private Database db;
     private TextView tvProgressLabel;
     private TextView userLabel;
     private Button deleteUserData;
-    public static final String MY_PREFS_NAME = "Setting";
+    private static final String MY_PREFS_NAME = "Setting";
     private SharedPreferences.Editor editor;
     private boolean colored;
     private boolean saving;
@@ -30,12 +30,10 @@ public class ApplicationSettingActivity extends AppCompatActivity {
     private String user;
     private Float comprimation;
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_application_setting);
-        Switch switchButton, switchButton2, switchButton3;
 
         SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
         comprimation = prefs.getFloat("comprimation", 2);
@@ -43,19 +41,19 @@ public class ApplicationSettingActivity extends AppCompatActivity {
         saving = prefs.getBoolean("saving", true);
         help = prefs.getBoolean("help", true);
         user = prefs.getString("user", "");
+
         editor = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
 
         userLabel = findViewById(R.id.user);
         userLabel.setText(user);
 
-        SeekBar seekBar = findViewById(R.id.comprimation);
+        seekBar = findViewById(R.id.comprimation);
         seekBar.setOnSeekBarChangeListener(seekBarChangeListener);
 
         tvProgressLabel = findViewById(R.id.textView);
-        tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MB):  " + ((int)(Math.round(comprimation)) + " MB"));
-        seekBar.setProgress(Math.round(comprimation-1));
+        tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MB):  " + Math.round((double)(comprimation*100.0f))/100.0f + " MB");
+        seekBar.setProgress(Math.round((int)((comprimation-1)/0.25)));
         deleteUserData = (Button) findViewById(R.id.buttonDelete);
-
 
         switchButton = (Switch) findViewById(R.id.colored);
         switchButton.setChecked(colored);
@@ -115,7 +113,6 @@ public class ApplicationSettingActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     @Override
@@ -127,17 +124,25 @@ public class ApplicationSettingActivity extends AppCompatActivity {
 
         @Override
         public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-            tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MB):  " + (progress+1) + " MB");
+            editor.putFloat("comprimation", ((float) (seekBar.getProgress()*0.25f)+1.0f));
+            comprimation=( (float)(seekBar.getProgress()*0.25f)+1.0f);
+            editor.apply();
+            setDB();
+            tvProgressLabel.setText("Maximálna veľkosť posielaného obrázku (1-5MB):  " + Math.round((double)(comprimation*100.0f))/100.0f + " MB");
         }
 
         @Override
         public void onStartTrackingTouch(SeekBar seekBar) {
+            editor.putFloat("comprimation", ((float) (seekBar.getProgress()*0.25f)+1.0f));
+            comprimation=( (float)(seekBar.getProgress()*0.25f)+1.0f);
+            editor.apply();
+            setDB();
         }
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
-            editor.putFloat("comprimation", seekBar.getProgress()+1);
-            comprimation=(float)seekBar.getProgress()+1;
+            editor.putFloat("comprimation", ((float) (seekBar.getProgress()*0.25f)+1.0f));
+            comprimation=( (float)(seekBar.getProgress()*0.25f)+1.0f);
             editor.apply();
             setDB();
         }
@@ -155,24 +160,22 @@ public class ApplicationSettingActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("");
             builder.setMessage("Prajete si zmazať všetky záznamy užívateľa '" + user + "' ?");
-            builder.setCancelable(false);
-
+            builder.setCancelable(true);
             builder.setPositiveButton("Áno", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
+                    db.deletadeAllUserRecord(user);
                     if (finalPocet == 1) {
                         Toast.makeText(getApplicationContext(), "Záznam zmazaný...", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(getApplicationContext(), "Všetky záznamy zmazané...", Toast.LENGTH_SHORT).show();
-                    }
-
+                }
                 }
             });
 
             builder.setNegativeButton("Nie", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    //Toast.makeText(getApplicationContext(), "You've changed your mind to delete all records", Toast.LENGTH_SHORT).show();
                 }
             });
             builder.show();

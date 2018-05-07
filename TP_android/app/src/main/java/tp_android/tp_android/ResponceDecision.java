@@ -1,11 +1,12 @@
 package tp_android.tp_android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,7 +52,6 @@ public abstract class ResponceDecision {
             default:
                 break;
         }
-
     }
 
     public static void ResponceSPZ (String response, String photoSend, Activity parentActivity, Long recordID, Boolean saving, String user) {
@@ -75,15 +75,27 @@ public abstract class ResponceDecision {
             case "SUCCESS":
                 newEcv(jsonResponce, parentActivity, response, photoSend, recordID, saving, user);
                 break;
+            case "UNEXPECTED_ERROR":
+                unexpectedError(jsonResponce,parentActivity);
+                break;
+
+            case "FILE_NOT_ALLOWED":
+                fileNotAllowed(jsonResponce, parentActivity);
+                break;
+            case "NO_EGV_INFO_FOUND":
+                noEgvFound(jsonResponce, parentActivity);
+                break;
 
             default:
                 break;
         }
+    }
 
+    private static void noEgvFound(JSONObject jsonResponce, Activity parentActivity) {
+        alertError(parentActivity,"Žiadne e-gov data...");
     }
 
     private static void newEcv (JSONObject jsonResponce, Activity parentActivity, String response, String photoSend, Long recordID, Boolean saving, String user) {
-        Log.d("responce", response);
         Database db = new Database(parentActivity);
         db.open();
         JSONObject dataArray = null;
@@ -95,9 +107,8 @@ public abstract class ResponceDecision {
         if (c.moveToFirst()) {
             db_ecv_default = c.getString(c.getColumnIndex("ecv_default"));
             db_user = c.getString(c.getColumnIndex("user"));
-            db_time_default = c.getString(c.getColumnIndex("date_time_dafault"));
+            db_time_default = c.getString(c.getColumnIndex("date_time_default"));
         }
-
 
         try {
             jsonResponce = new JSONObject(response);
@@ -109,12 +120,14 @@ public abstract class ResponceDecision {
             dataArray = jsonResponce.getJSONObject("data");
             if (saving==true){
                 Boolean id = db.updateRecord(recordID, Calendar.getInstance().getTime(),db_time_default, dataArray.getString("plate"),db_ecv_default, photoSend, dataArray.toString(), db_user);
-                Log.d("update?",id.toString() );
             }
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Intent returnIntent = new Intent();
+        parentActivity.setResult(Activity.RESULT_OK,returnIntent);
 
         Intent intent = new Intent(parentActivity, ListItemActivity.class);
         intent.putExtra("response",dataArray.toString());
@@ -122,8 +135,8 @@ public abstract class ResponceDecision {
         intent.putExtra("recordID", recordID);
         parentActivity.startActivity(intent);
         parentActivity.finish();
-    }
 
+    }
 
     private static void noLicencePlateFound (JSONObject jsonResponce, Activity parentActivity) {
         String message = "";
@@ -133,10 +146,8 @@ public abstract class ResponceDecision {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        Intent intent = new Intent(parentActivity, ResponceErrorActivity.class);
-        intent.putExtra("message", message);
-        parentActivity.startActivity(intent);
+        alertError(parentActivity,"Žiadna ŠPZ ...");
+        //alertError(parentActivity,message);
     }
 
     private static void licencePlateFound (JSONObject jsonResponce, Activity parentActivity, String response, String encodedImage, float ratio) {
@@ -145,6 +156,7 @@ public abstract class ResponceDecision {
         intent.putExtra("photoSend", encodedImage);
         intent.putExtra( "ratio", ratio);
         parentActivity.startActivity(intent);
+        parentActivity.finish();
     }
 
     private static void unexpectedError (JSONObject jsonResponce, Activity parentActivity) {
@@ -156,9 +168,7 @@ public abstract class ResponceDecision {
             e.printStackTrace();
         }
 
-        Intent intent = new Intent(parentActivity, ResponceErrorActivity.class);
-        intent.putExtra("message", message);
-        parentActivity.startActivity(intent);
+        alertError(parentActivity,message);
     }
 
     private static void fileNotAllowed (JSONObject jsonResponce, Activity parentActivity) {
@@ -169,19 +179,24 @@ public abstract class ResponceDecision {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        Intent intent = new Intent(parentActivity, ResponceErrorActivity.class);
-        intent.putExtra("message", message);
-        parentActivity.startActivity(intent);
+        alertError(parentActivity,message);
     }
 
-    //nejde pripojenie, nejde poslatrequest, dlho caka ....
-
     public static void notResponce (String message, Activity parentActivity) {
+        alertError(parentActivity,message);
+    }
 
-        Intent intent = new Intent(parentActivity, ResponceErrorActivity.class);
-        intent.putExtra("message", message);
-        parentActivity.startActivity(intent);
+    public static void alertError(Activity parentActivity, String error) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
+        builder.setTitle("Chyba");
+        builder.setMessage(error);
+        builder.setCancelable(true);
+        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.show();
     }
 
 
