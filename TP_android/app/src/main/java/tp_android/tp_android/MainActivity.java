@@ -36,7 +36,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else if (c.moveToFirst()) {
             db_colored = c.getInt(c.getColumnIndex("colored"))!= 0;
-            db_saving = c.getInt(c.getColumnIndex("saving"))!= 0;
+            //db_saving = c.getInt(c.getColumnIndex("saving"))!= 0;
+            db_saving = true;
             db_help = c.getInt(c.getColumnIndex("help"))!= 0;
             db_user = c.getString(c.getColumnIndex("user"));
             db_comrimation = c.getFloat(c.getColumnIndex("comprimation"));

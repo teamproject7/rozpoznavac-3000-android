@@ -61,7 +61,7 @@
         android:orientation="horizontal"
         android:paddingBottom="20dp"
         android:paddingTop="20dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <Switch
             android:id="@+id/saving"

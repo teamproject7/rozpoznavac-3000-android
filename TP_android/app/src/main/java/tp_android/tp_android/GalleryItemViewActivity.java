@@ -201,7 +201,7 @@ public class GalleryItemViewActivity extends AppCompatActivity {
         if (toast != null) {
             toast.cancel();
         }
-        toast = Toast.makeText(getApplicationContext(), ("Povodná/odosielaná veľkosť obrázku: "+Math.round((double)(file_length*100.0f))/100.0f+" Mb/ "+Math.round((double)(new_file_length*100.0f))/100.0f+" Mb"), Toast.LENGTH_SHORT);
+        toast = Toast.makeText(getApplicationContext(), ("Povodná/odosielaná veľkosť obrázku: "+Math.round((double)(file_length*100.0f))/100.0f+" MB/ "+Math.round((double)(new_file_length*100.0f))/100.0f+" MB"), Toast.LENGTH_SHORT);
         toast.show();
     }
 

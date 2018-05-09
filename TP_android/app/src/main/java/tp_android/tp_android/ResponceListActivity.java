@@ -1,6 +1,8 @@
 package tp_android.tp_android;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -45,6 +47,7 @@ public class ResponceListActivity extends AppCompatActivity {
     private Bitmap photo;
     private ArrayList<String> spzList = new ArrayList<String>();
     static final int LIST_RELOAD = 1;
+    private boolean preslo= false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,22 +111,29 @@ public class ResponceListActivity extends AppCompatActivity {
                     y1 = Math.round(Collections.min(listy) * ratio);
                     y2 = Math.round(Collections.max(listy) * ratio);
 
-                    Bitmap bmp = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                    byte[] imageBytes = baos.toByteArray();
-                    String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-                    spzList.add(encodedImage);
+                    try {
+                        Bitmap bmp = Bitmap.createBitmap(photo, x1, y1, x2 - x1, y2 - y1);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                        byte[] imageBytes = baos.toByteArray();
+                        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+                        spzList.add(encodedImage);
 
-                    if (saving == true) {
-                        Long id = db.addRecord(Calendar.getInstance().getTime(), item.getString("plate"), encodedImage, item.toString(), user);
-                        recordID.add(id);
-                        recordJSON.add(((JSONObject)dataArray.get(i)).toString());
-                        Cursor c = db.fetchRecord(id);
-                        if (c.moveToFirst()) {
-                            list.add(c.getString(c.getColumnIndex("ecv")));
+                        if (saving == true) {
+                            Long id = db.addRecord(Calendar.getInstance().getTime(), item.getString("plate"), encodedImage, item.toString(), user);
+                            recordID.add(id);
+                            recordJSON.add(((JSONObject)dataArray.get(i)).toString());
+                            Cursor c = db.fetchRecord(id);
+                            if (c.moveToFirst()) {
+                                list.add(c.getString(c.getColumnIndex("ecv")));
+                            }
                         }
+                        preslo=true;
                     }
+                    catch (Exception e){
+                        e.printStackTrace();
+                    }
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -135,15 +145,18 @@ public class ResponceListActivity extends AppCompatActivity {
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.activity_responce_list_row, list);
         lv.setAdapter(arrayAdapter);
         lv.setClickable(true);
-        if (dataArray.length() > 1) {
+        if (dataArray.length() >=2  && preslo) {
             lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                     vypis(position);
                 }
             });
-        } else {
+        } else if (dataArray.length() ==1  && preslo) {
             vypis(0);
+        }
+        else {
+            alertError(this,"Nepodarilo sa spracovať prijaté údaje zo serveru");
         }
 
     }
@@ -182,7 +195,7 @@ public class ResponceListActivity extends AppCompatActivity {
                 ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this,R.layout.activity_responce_list_row, list );
                 lv.setAdapter(arrayAdapter);
                 lv.setClickable(true);
-                if(dataArray.length() >= 1){
+                if(dataArray.length() >= 1 && preslo){
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
@@ -197,6 +210,19 @@ public class ResponceListActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_CANCELED) {
             }
         }
+    }
+    public  void alertError(Activity parentActivity, String error) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
+        builder.setTitle("Chyba");
+        builder.setMessage(error);
+        builder.setCancelable(true);
+        builder.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ResponceListActivity.this.finish();
+            }
+        });
+        builder.show();
     }
 
 }

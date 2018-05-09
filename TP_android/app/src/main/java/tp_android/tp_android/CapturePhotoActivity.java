@@ -46,7 +46,7 @@ public class CapturePhotoActivity extends Activity {
 
     private boolean imageInit = false;
     private static final String app_dir = "spz_egov";
-    private int CAMERA_REQUEST;
+    private static final int CAMERA_REQUEST = 1888;
     final int MyVersion = Build.VERSION.SDK_INT;
     private static final String MY_PREFS_NAME = "Setting";
 
@@ -56,7 +56,6 @@ public class CapturePhotoActivity extends Activity {
     private boolean help;
     private String user;
 
-    private Intent cameraIntent;
     private Toast toast;
 
     @Override
@@ -77,12 +76,12 @@ public class CapturePhotoActivity extends Activity {
                 sendButton = (Button) findViewById(R.id.button2);
 
                 String model =  android.os.Build.MANUFACTURER;
-                if(model.equalsIgnoreCase("samsung")){
-                    CAMERA_REQUEST = 0;
+                /*if(model.equalsIgnoreCase("samsung")){
+                    CAMERA_REQUEST = 1888;
                 }
                 else{
-                    CAMERA_REQUEST = 1337;
-                }
+                    CAMERA_REQUEST = 1888;
+                }*/
 
                 StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
                 StrictMode.setVmPolicy(builder.build());
@@ -153,8 +152,7 @@ public class CapturePhotoActivity extends Activity {
 
         file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()+ out);
         path = file.toString();
-        cameraIntent = null;
-        cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
         startActivityForResult(cameraIntent, CAMERA_REQUEST);
     }
@@ -271,7 +269,7 @@ public class CapturePhotoActivity extends Activity {
         if (toast != null) {
             toast.cancel();
         }
-        toast = Toast.makeText(getApplicationContext(), ("Povodná/odosielaná veľkosť obrázku: "+Math.round((double)(file_length*100.0f))/100.0f+" Mb/ "+Math.round((double)(new_file_lenght*100.0f))/100.0f+" Mb"), Toast.LENGTH_SHORT);
+        toast = Toast.makeText(getApplicationContext(), ("Povodná/odosielaná veľkosť obrázku: "+Math.round((double)(file_length*100.0f))/100.0f+" MB/ "+Math.round((double)(new_file_lenght*100.0f))/100.0f+" MB"), Toast.LENGTH_SHORT);
         toast.show();
     }
 

@@ -35,7 +35,7 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.ViewHolder> {
         String prefix = android.get(i).getPrefix();
 
             if (prefix.equals("")){
-                Picasso.with(context).load(new File(android.get(i).getPath())).resize(600, 600).onlyScaleDown().into(viewHolder.img_android);
+                Picasso.with(context).load(new File(android.get(i).getPath())).resize(600, 600).centerCrop().into(viewHolder.img_android);
             }
             else {
                 if(prefix.equals("SD/")){
